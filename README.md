@@ -21,4 +21,4 @@ python tools/validate_repository.py
 python -m unittest discover -s tests/security_colleague -v
 ```
 
-TLP, copyright, and licensing are separate. This handoff does not replace or amend the repository's existing `LICENSE`. The package marking does not authorize sharing evidence, captures, or reports. Use non-public distribution consistent with the author's TLP:GREEN instructions.
+TLP, copyright, and licensing are separate. This handoff does not replace or amend the repository's existing `LICENSE`. The package marking does not authorize sharing evidence, captures, or reports. On 2026-09-15 the author authorized publication of this package to this public repository after its visibility was explicitly confirmed. The TLP:GREEN marking is retained; this specific publication authorization does not extend to evidence or reports.

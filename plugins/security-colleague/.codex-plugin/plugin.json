@@ -1,0 +1,21 @@
+{
+  "name": "security-colleague",
+  "version": "0.1.0",
+  "description": "Evidence-led consumption-only access reviews and security investigation.",
+  "author": {
+    "name": "Erez Kalman"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Security Colleague",
+    "shortDescription": "Assess access controls and web evidence.",
+    "longDescription": "Review consumption-only access, shared dependencies, HAR and web evidence, sanitization limits, regex, browsers, and security findings. TLP:GREEN. (C) Erez Kalman.",
+    "developerName": "Erez Kalman",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Review consumption-only access to this service."
+    ]
+  },
+  "repository": "https://github.com/kaerez/skills"
+}

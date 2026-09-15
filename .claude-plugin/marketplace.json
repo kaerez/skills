@@ -1,0 +1,13 @@
+{
+  "name": "personal",
+  "owner": {
+    "name": "Erez Kalman"
+  },
+  "plugins": [
+    {
+      "name": "security-colleague",
+      "source": "./plugins/security-colleague",
+      "description": "Evidence-led consumption-only access reviews and security investigation."
+    }
+  ]
+}

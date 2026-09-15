@@ -4,7 +4,7 @@
 
 - Python 3.12.14 on Linux: all 8 bundled synthetic HAR regression tests passed.
 - OpenAI plugin validator: passed after excluding runtime-only policy.products from exported UI metadata.
-- Installed core skill frontmatter validator: passed. Core instructions and scripts were exported unchanged.
+- Installed core skill frontmatter validator: passed. Scripts were exported unchanged; core provenance notes were updated for publication.
 - Repository checks: catalogs, names, versions, markings, relative references, and Python syntax passed.
 - Archive integrity and all member hashes checked during handoff.
 

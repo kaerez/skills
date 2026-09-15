@@ -1,0 +1,9 @@
+interface:
+  display_name: Security Colleague
+  short_description: Investigate security, access controls, and web evidence
+  default_prompt: Use $security-colleague for this security task. Start with concise
+    questions about my goal, tools, clients, and preferred report depth.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true

@@ -2,7 +2,7 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
-1. Make `kaerez/skills` private before adding this TLP:GREEN package.
+1. The author authorized publishing this package to the public `kaerez/skills` repository on 2026-09-15, superseding the earlier private-repository prerequisite for this publication. Evidence and reports remain outside that authorization.
 2. Extract `security-colleague-repository-files.zip`.
 3. Copy the extracted contents directly into the repository root, alongside its existing `LICENSE`. Do not upload the ZIP itself or add a wrapping `security-colleague-handoff` folder.
 4. Replace the existing `README.md`; leave the existing `LICENSE` untouched. Include the dot-prefixed directories `.agents`, `.claude-plugin`, and `.github`, plus `.gitignore`. On macOS, Command+Shift+Period reveals these in Finder.
