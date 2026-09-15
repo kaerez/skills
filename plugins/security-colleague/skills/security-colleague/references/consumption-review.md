@@ -161,6 +161,31 @@ allow rule evaluated above the existing block, so anything unenumerated stays
 blocked. If a time-boxed fail-open step is accepted deliberately, say so, enable
 event logging, and tighten once the observed host set is known.
 
+Check the proposed rule set against the evidence before publishing it, with
+`../scripts/rule_coverage.py`. The check is what turns "I believe this list is
+complete" into a stated bound: it names the evidence hosts no rule covers and
+the rules that match nothing, gives the effective decision per host after
+first-match precedence, and reports the shape the list actually has.
+
+```bash
+python3 <skill-directory>/scripts/rule_coverage.py \
+  --evidence /path/to/host-inventory.json \
+  --rule block:domain:example.invalid \
+  --rule allow:fqdn:watch.example.invalid \
+  --default-action allow
+```
+
+`--evidence` is repeatable and takes `har_inventory.py` JSON or a
+newline-delimited host list, so a gateway or firewall log export works as
+evidence. `--rule` is repeatable and ordered, spec form ACTION:KIND:VALUE with
+ACTION allow or block and KIND fqdn or domain; `--rules-file` takes the same
+specs one per line. Domain rules match whole labels, so a rule for a domain
+does not swallow a lookalike registrable name. Under a default-allow shape the
+report states the residual surface as unbounded by construction rather than
+inventing a count. It cannot find hosts the evidence never recorded; only
+retrieving the prohibited surface's own application does that. A clean report
+bounds the list rather than completing it.
+
 Check shared frontends, authentication services, APIs, media/storage hosts, and alternate creator routes. Blocking login does not establish consumption-only access: guest editing and pre-existing sessions may remain possible. A public share link may grant edit permission. Network reachability, service authorization, and UI affordances are separate facts.
 
 Do not infer business permissions from HTTP methods. Viewing may require POST requests for login, GraphQL queries, search, DRM, progress, or token refresh. Blocking all POST/PUT/PATCH requests can break consumption while leaving other creation routes. Shared RPC/GraphQL paths or WebSockets may carry both reads and writes; URL filtering alone may still be insufficient. Blocking uploads also does not prevent editing, AI generation, copying, publishing, or imports by URL.
@@ -186,7 +211,7 @@ When overlaps interact, give internally consistent restriction-first and consump
 
 ## Deliver a decision and verification plan
 
-Use the chosen depth and delivery format. Consult [report-format.md](report-format.md) for a requested detailed consumption review; return only a brief decision when no full report was selected. Lead with whether domain-only separation is supported, partial, impossible for a required flow, or unresolved. Include the action boundary, evidenced domain decisions, explicit allow/block overlap options, and the smallest useful next verification steps. Give copyable rules when the engine and evidence support them; label vendor-neutral intent or provisional lists honestly.
+Use the chosen depth and delivery format. Consult [report-format.md](report-format.md) for a requested detailed consumption review; return only a brief decision when no full report was selected. A brief decision still carries the rule-shape verdict and the completeness bound: the recommended shape, the single fact that decides it, what that shape cannot do, and what the host set does not cover. Brevity drops the shape table in [report-format.md](report-format.md), not the verdict it exists to state. Lead with whether domain-only separation is supported, partial, impossible for a required flow, or unresolved. Include the action boundary, evidenced domain decisions, explicit allow/block overlap options, and the smallest useful next verification steps. Give copyable rules when the engine and evidence support them; label vendor-neutral intent or provisional lists honestly.
 
 Verify viewing and prohibited actions independently, using supplied results or authorized scoped tests. Record actual versus expected outcomes; mark unrun tests as unrun. Include fresh viewing, necessary registration/session refresh, anonymous routes, and existing creator sessions where they affect the conclusion. Do not equate a loaded landing page with working playback or a failed login with blocked creation.
 

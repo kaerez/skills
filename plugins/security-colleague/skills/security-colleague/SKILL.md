@@ -66,10 +66,12 @@ Before requesting evidence from the user, exhaust read-only retrieval: fetch the
 supplied URL with tracking parameters stripped, follow redirects, read the
 referenced bundles, resolve the candidate hosts, and use logs the organization
 already holds. A JavaScript shell or a refused fetch is a rung on that ladder,
-not the end of it. Where the host offers subagents, tasks or parallel
-execution, fan enumeration out across the distinct surfaces rather than walking
-them serially; where it does not, work serially and say so. A subagent's report
-is a claim to verify, not a result to trust.
+not the end of it. A capture request is not the bottom rung: any trigger named
+in the consumption review interrupts the ladder and the request is made then,
+while the remaining rungs continue where they are cheap. Where the host offers
+subagents, tasks or parallel execution, fan enumeration out across the distinct
+surfaces rather than walking them serially; where it does not, work serially and
+say so. A subagent's report is a claim to verify, not a result to trust.
 See [consumption review](references/consumption-review.md).
 
 Identify available file-reading, execution, research, browser and artifact capabilities before depending on them. Use their actual interfaces; do not assume OpenAI tool names, Claude tool names, a canvas, network access, a shell, or an installed interpreter. Resolve scripts and references relative to this skill's directory, never an author's local path. Follow the host's security and tool-use instructions.
@@ -94,7 +96,7 @@ Apply the existing session's authorized scope. Read-only research, local inspect
 - `scripts/har_sanitize.py`: derive a route-level sanitized HAR that keeps method, decoded path shape, operation name, status and MIME type while removing header values, cookies, query values and bodies. Percent-decodes before redacting, keeps the placeholder mapping in a separate file, and re-scans the output with independent patterns. `--validate-only` reports parse coverage for arbitrary input. It is not a de-identification certification.
 - `scripts/host_probe.py`: resolve candidate hosts with DNS only, record alias chains and terminating providers, enumerate regional and cluster variants, and compare selected resolvers. It sends no HTTP and no traffic to the service. Resolution is not reachability.
 - `scripts/har_minimize.py`: create a deliberately lossy HAR derivative by omitting headers, cookies, URL paths/queries, payloads, timestamps, and extensions. Hostnames are pseudonymized by default. Read the sanitization reference before retaining real hosts. This is structural minimization, not multilingual entity recognition, a replayable capture, or a de-identification certification.
-- `scripts/rule_coverage.py`: check a proposed allow/block rule list against the hosts actually in evidence — which evidence hosts no rule covers, which rules match nothing, the effective decision per host after precedence, and whether the shape is fail-open. It models exact-host versus domain-suffix matching generically; verify the selected engine's own semantics. It proves nothing about hosts missing from the evidence.
+- `scripts/rule_coverage.py`: check a proposed allow/block rule list against the hosts actually in evidence — which evidence hosts no rule covers, which rules match nothing, the effective decision per host after precedence, and whether the shape is fail-open. Run it on every proposed rule list before delivering it, and again whenever the evidence set widens. It models exact-host versus domain-suffix matching generically; verify the selected engine's own semantics. It proves nothing about hosts missing from the evidence.
 
 Use format-specific tools for deeper analysis and targeted sanitization when available. State their tested format, language, encoding, and version coverage. Never label an opaque, skipped, truncated, or unsupported region as inspected or clean.
 
@@ -102,4 +104,6 @@ Use format-specific tools for deeper analysis and targeted sanitization when ava
 
 Lead with the decision or finding, followed by evidence, consequence, uncertainty, and the smallest useful next step. Show both allow and block outcomes for shared dependencies. Keep proposed rules, simulated behavior, and tests under real enforcement distinct. For sanitized output, include a coverage/omission summary; for regex, include the engine and test outcome; for vulnerabilities, distinguish applicability, severity, likelihood, and remediation.
 
-Use synthetic examples and sanitized excerpts in reusable output. Save artifacts using the host's supported file workflow when requested or needed for the chosen deliverable. Mark unrun tests and incomplete work explicitly. Preserve useful progress when access or missing evidence prevents completion. Do not substitute a maturity label such as pilot, draft, first pass or proof of concept for a statement of coverage. State each set's completeness bound instead, with the word fail-open where anything outside the set is permitted by default.
+For an allow/block recommendation, name the rule shape before the host list at any depth, brief included: blocklist, allowlist, or a default-deny with validated allows above it. Give the one fact that decides it and what that shape cannot do. A blocklist must be complete to work and cannot be shown to be; an allowlist must be complete to avoid breakage and shows its own gaps. For a default-deny with allows above it, say which rule the engine evaluates first: the same two rules in the opposite order is a different policy. The full table is in [report format](references/report-format.md).
+
+Use synthetic examples and sanitized excerpts in reusable output. Save artifacts using the host's supported file workflow when requested or needed for the chosen deliverable. Mark unrun tests and incomplete work explicitly. Preserve useful progress when access or missing evidence prevents completion. Do not substitute a maturity label such as pilot, draft, first pass or proof of concept for a statement of coverage. State each set's completeness bound instead, with the word fail-open where anything outside the set is permitted by default. Provisional and Unresolved remain correct when each is attached to a named gap and to the next observation that closes it.

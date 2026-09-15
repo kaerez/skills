@@ -36,6 +36,7 @@ Treat stronger controls as conditional proposals until current primary documenta
 - Enumerate regional and cluster siblings rather than reasoning about symmetry. Regionalization is commonly asymmetric: an admin console, a public API and a live-event host may each have a regional twin while a shared SDK host does not. A blocklist built from one region is systematically incomplete, and the gap is enumerable without sending a single request to the service.
 - Treat a DNS alias target and a browser redirect as different dependencies. A CNAME does not by itself change the HTTP hostname or create a separate browser request. Whether the alias also needs an exception depends on the DNS engine's evaluation.
 - Track geography, tenant, custom-domain, cluster, and signed-media host variation when observed or documented. One numbered host does not justify a wildcard for every cluster. Avoid presenting one sample's host set as globally complete.
+- Check the proposed rule set against the evidence with `../scripts/rule_coverage.py` before presenting it. The check catches an exact-host rule that misses a cluster-direct or regional twin, a rule that matches nothing in the evidence, and a default-allow shape whose residual surface is unbounded by construction. It measures the list against the supplied evidence only and proves nothing about hosts that evidence never recorded.
 
 Enumerating to block and enumerating to allow are not symmetric, and the
 asymmetry decides the rule shape. A blocklist must be complete to work: every
