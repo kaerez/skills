@@ -13,6 +13,7 @@ Identify DevTools/CDP/WebDriver/WebDriver BiDi/debugging support for the actual 
 - Separate browser security restrictions from business authorization and enterprise controls; consider fresh and existing sessions.
 - Review DNS/DoH, SNI/CONNECT visibility, ECH, HTTP/2/HTTP/3/QUIC, TLS interception, trust stores, pinning, mTLS, proxies, split tunneling and agent coverage on the actual path. Propose protocol changes only when the selected control needs them, with impact documented.
 - Verify effective policy values, scope/precedence, OS/edition/version, mandatory/recommended status and personal-profile coverage. Configuration alone does not prove deployment.
+- Treat a vendor browser extension or managed-browser agent as its own enforcement layer with its own coverage. It can reach clients the network path cannot inspect, which is exactly where the uninspectable-OS gaps above bite. Confirm licensing, deployment scope and the browsers actually covered before relying on it, and ask about it during intake.
 - Separate endpoint app blocking from action controls inside a running app. Use actual bundle/process/publisher/hash selectors and platform support. Explain how browser consumption is retained if intended.
 
 Verify exact configurations using official browser, automation, Cato and Iru/Kandji documentation. Do not assume every CASB supports every service/action or native client.

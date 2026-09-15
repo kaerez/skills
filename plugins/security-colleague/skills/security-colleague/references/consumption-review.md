@@ -15,12 +15,48 @@ Use these defaults unless the user specifies otherwise:
 | Create, edit, generate, duplicate into a workspace, upload, import, publish, or administer content | Block. Include anonymous or existing-account routes where applicable. |
 | Sign up or log in to an authoring/creator account | Block unless the user explicitly permits it; show an overlap decision if the same account flow is required for viewing. |
 | Download/export existing content, comment, chat, ask questions, react, vote, or transmit microphone/camera | State a service-specific assumption or option where material. Do not silently treat participation or new content generation as passive viewing. |
+| Solve a CAPTCHA or bot-defence challenge in a permitted registration or viewing flow | Allow. It is usually a hard dependency on a provider-wide host that cannot be scoped to this service, and it is the most common silent cause of a registration that fails while the page loads perfectly. An authentication-style status on an attestation path is often normal, not a block. |
 
 Classify registration by its purpose and granted capabilities. An attendee registration record and its necessary personal details are a permitted exception when the user allows registration for viewing; do not classify them as a prohibited upload merely because they use POST or write server-side data. Allow only the viewer functionality intended by the user; flag participation or authoring that comes with it. If a viewer account can also become a creator, mark the identity flow as shared rather than assuming the label “viewer” enforces a boundary.
 
 Treat a specific user prohibition on login as binding, including in the recommended strict configuration. Still describe the consumption that would be lost and, when helpful, an explicitly different policy option. Do not weaken a stated requirement silently.
 
 Use the intake answers to identify the enforcement product, deployment, license, browser/native client, operating systems, identities, and policy scope. If the user leaves the control unspecified after intake, label a domain-only baseline as provisional and separate optional finer controls. Do not assume TLS inspection, application controls, enterprise licensing, or tenant-admin access.
+
+## Retrieve before requesting evidence
+
+Exhaust read-only retrieval before asking the user for a capture. A JavaScript
+shell is the first rung of this ladder, not the end of it. Record which rungs
+ran, which the environment refused, and what each produced.
+
+1. **Fetch the supplied URL with tracking parameters stripped.** A recipient-scoped
+   marketing or click token can attribute an open or click to a real person, and
+   it does not belong in a report or a search query. Keep a functional signed
+   parameter only where the authorized read genuinely needs it.
+2. **Follow and record the redirect chain**, including any email click tracker or
+   link shortener. That entry-link host is required for the supplied URL to work
+   and is shared across every message from that sender, which makes it an overlap
+   decision rather than an incidental hop.
+3. **Parse the returned document** for script, stylesheet, iframe, image and form
+   `action` references, plus any inline configuration naming hosts or endpoints.
+4. **Fetch the referenced bundles and read them** for hostnames, API paths,
+   operation names and authoring routes. When a supplied capture contains
+   response bodies, those bundles are already in hand and cost nothing to inspect.
+   Delivered code proves the client ships a capability; it does not prove the
+   endpoint is reachable or that the operation would succeed. Label it that way.
+5. **Resolve every candidate host** with `../scripts/host_probe.py`: alias chain,
+   terminating provider, and the documented and undocumented regional and cluster
+   variants. Honour any instruction about which resolvers to use or avoid.
+6. **Mine the organization's own gateway, firewall or proxy events** for the
+   service. Existing telemetry enumerates the hosts users actually reach,
+   including regional and vanity hosts, at no test-traffic cost.
+7. **Only then request evidence**, naming the single smallest capture or log
+   extract that would resolve what is still open.
+
+Stop conditions worth stating plainly: a tool refusing a URL is a capability
+limit to record and route around, not a fact about the service; an empty result
+from one rung does not close the next; and none of this authorizes submitting a
+form, registering, signing in or changing a control.
 
 ## Research the actual flows
 
@@ -43,7 +79,7 @@ Cite the source or capture and its observation/check date near each material cla
 
 ### Use HAR evidence when available
 
-Run the bundled local helper to compare host use across labeled captures:
+Run the bundled local helpers. Compare host use across labeled captures first:
 
 ```bash
 python3 <skill-directory>/scripts/har_inventory.py \
@@ -53,15 +89,45 @@ python3 <skill-directory>/scripts/har_inventory.py \
   --output /path/to/host-inventory.json
 ```
 
-Use only the captures available; omit missing ones. The helper reads files without making network requests. It omits URL paths, query strings, fragments, userinfo, bodies, cookies, and header values from its report. It distinguishes captured requests from redirect references and identifies IP literals. Review skipped-entry counts, including unsupported URLs or ambiguous IDN mappings; obtain the browser's ASCII hostname for unresolved IDNs. It does not sanitize the original HAR, infer actions, prove necessity, or certify an allowlist. Hostnames and workflow labels can still identify tenants. Inspect only the relevant sanitized route or operation evidence locally if host overlap needs explanation; request the smallest additional capture that resolves an important gap.
+Use only the captures available; omit missing ones. The helper reads files without making network requests. It omits URL paths, query strings, fragments, userinfo, bodies, cookies, and header values from its report. It distinguishes captured requests from redirect references and identifies IP literals. Review skipped-entry counts, including unsupported URLs or ambiguous IDN mappings; obtain the browser's ASCII hostname for unresolved IDNs. It does not sanitize the original HAR, infer actions, prove necessity, or certify an allowlist. Hostnames and workflow labels can still identify tenants. Quote counts from its `totals` block rather than counting rows by hand.
+
+Host and method counts cannot separate a permitted write from a prohibited one.
+A registration submission and an authoring mutation can both appear as one POST
+to one host. When that distinction decides the recommendation, derive route-level
+evidence with `../scripts/har_sanitize.py`, which keeps method, decoded path
+shape, operation name, status and MIME type while removing header values,
+cookies, query values and bodies:
+
+```bash
+python3 <skill-directory>/scripts/har_sanitize.py /path/to/view.har \
+  --output /path/to/view-routes.har --mapping /path/to/placeholders.json
+```
+
+Do not improvise this in-session. Ad-hoc redaction has failed on percent-encoded
+path separators and then reported itself clean because the check reused the same
+pattern as the redactor. Inspect only the relevant sanitized route or operation evidence locally if host overlap needs explanation; request the smallest additional capture that resolves an important gap.
 
 ## Decide what can actually be enforced
 
 Judge policy at the available control's granularity. Domain-only rules cannot distinguish paths, methods, event IDs, users, account types, or application operations on the same hostname. Allowing a host for an embedded player also allows direct requests to that host. DNS cannot limit access to one event, share permission, content owner, or URL path on it.
 
+Replacing a default-deny application block with an enumerated blocklist inverts
+the posture from fail-closed to fail-open for every host not on the list, and an
+enumerated blocklist is not equivalent to "authoring blocked". Prefer a narrow
+allow rule evaluated above the existing block, so anything unenumerated stays
+blocked. If a time-boxed fail-open step is accepted deliberately, say so, enable
+event logging, and tighten once the observed host set is known.
+
 Check shared frontends, authentication services, APIs, media/storage hosts, and alternate creator routes. Blocking login does not establish consumption-only access: guest editing and pre-existing sessions may remain possible. A public share link may grant edit permission. Network reachability, service authorization, and UI affordances are separate facts.
 
 Do not infer business permissions from HTTP methods. Viewing may require POST requests for login, GraphQL queries, search, DRM, progress, or token refresh. Blocking all POST/PUT/PATCH requests can break consumption while leaving other creation routes. Shared RPC/GraphQL paths or WebSockets may carry both reads and writes; URL filtering alone may still be insufficient. Blocking uploads also does not prevent editing, AI generation, copying, publishing, or imports by URL.
+
+Telemetry hosts deserve one specific check rather than a blanket dismissal: a
+browser monitoring or analytics beacon commonly re-exports the entry URL, which
+can carry the recipient-scoped tracking token, to a third party. Where blocking
+such a host costs no observed consumption, the privacy improvement and the rule
+simplification coincide. Any regulatory conclusion belongs with Legal, Risk and
+Compliance rather than in this analysis.
 
 Prefer the narrowest evidenced exact hosts and explicit exceptions within the requested policy scope. Keep optional/incidental hosts out of the necessary set. For shared third-party hosts, identify other tenants/services enabled if allowed and collateral breakage if blocked. Explain wildcard, apex, CNAME, rule precedence, and default-action semantics before treating a list as implementable. Verify engine-specific syntax against current official documentation.
 

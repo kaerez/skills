@@ -151,9 +151,26 @@ def summarize(captures):
                     target_row = host_row(hosts, dest, dest_kind)
                     target_row["redirect_references_by_workflow"][label] += 1
                     redirects[(label, hostname, dest)] += 1
+        summary["hosts_with_captured_requests"] = sum(
+            1 for row in hosts.values() if label in row["by_workflow"])
         summaries.append(summary)
+    shared = sorted(
+        name for name, row in hosts.items() if len(row["by_workflow"]) > 1)
+    totals = {
+        "host_count": len(hosts),
+        "hostname_count": sum(1 for row in hosts.values() if row["kind"] == "hostname"),
+        "ip_literal_count": sum(1 for row in hosts.values() if row["kind"] == "ip_literal"),
+        "hosts_with_captured_requests": sum(
+            1 for row in hosts.values() if row["captured_requests"]),
+        "redirect_only_host_count": sum(
+            1 for row in hosts.values() if not row["captured_requests"]),
+        "shared_across_workflows_count": len(shared),
+        "shared_across_workflows": shared,
+        "captured_request_count": sum(row["captured_requests"] for row in hosts.values()),
+    }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
+        "totals": totals,
         "scope": "Host inventory only; workflow labels are supplied, not inferred actions.",
         "omitted": [
             "input filenames", "URL paths", "queries", "fragments", "userinfo",
@@ -166,6 +183,8 @@ def summarize(captures):
             "No network requests, DNS resolution, action classification, or rule generation performed.",
             "Review skipped-request counts: invalid/unsupported URLs and lossily mapped IDNs are omitted.",
             "Hostnames and workflow labels may themselves identify tenants; review before sharing.",
+            "Quote counts from totals rather than counting host rows by hand.",
+            "Host-level methods cannot separate a permitted write from a prohibited one; use har_sanitize.py for route evidence.",
         ],
         "captures": summaries,
         "hosts": [hosts[name] for name in sorted(hosts)],

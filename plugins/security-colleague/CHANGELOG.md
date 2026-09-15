@@ -2,6 +2,51 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
+## 0.2.0 — Retrieval ladder and route-level evidence, 2026-09-15
+
+Verified: repository validation and all 41 regression tests pass on Python 3.12
+on Linux, macOS and Windows ([CI run](https://github.com/kaerez/skills/actions/runs/34990618029)).
+Unverified: any client installation, update or session reload, and live
+enforcement behaviour.
+
+- Add `scripts/har_sanitize.py`: route-level sanitized HAR derivative that keeps
+  method, decoded path shape, operation name, status and MIME type while removing
+  header values, cookies, query values and bodies. Percent-decodes before
+  redacting, keeps the placeholder mapping in a separate file, re-parses the
+  output and re-scans it with independently constructed patterns. Includes a
+  `--validate-only` parse-coverage mode for arbitrary input.
+- Add `scripts/host_probe.py`: DNS-only host probe with selectable and excludable
+  resolvers, alias-chain and terminating-provider reporting, regional and cluster
+  variant enumeration, cross-resolver divergence detection and a zero-query
+  `--dry-run`. Sends no HTTP.
+- `scripts/host_probe.py`: accept a DNS answer only from the resolver actually
+  queried (the datagram socket is connected, so the kernel discards off-path
+  replies), require the response bit, and require the question section to echo
+  the name asked. Answers remain unauthenticated: there is no DNSSEC validation
+  and an on-path attacker can still forge one.
+- `scripts/har_inventory.py`: report `totals` including host counts and hosts
+  shared across workflows; `schema_version` 1 to 2. Fixes reviews quoting a
+  hand-counted host total.
+- Consumption review: require read-only retrieval before requesting a capture,
+  with an explicit ladder and stop conditions; treat CAPTCHA as a hard
+  registration dependency on an unscopable host; require bundle inspection when a
+  capture carries bodies; name the fail-open blocklist inversion; check telemetry
+  hosts for re-export of the entry URL's tracking token.
+- Enforcement: state that inline application controls only see flows the network
+  layer allowed; require alias-chain and provider resolution; require enumeration
+  of regional and cluster siblings; put existing gateway and firewall logs first
+  in verification; cover elevated in-event roles; add the vendor browser
+  extension as its own control layer.
+- Evidence: delivered client code is not a working server operation; a self-scan
+  reusing the redactor's patterns is not verification; resolution is not
+  reachability; NXDOMAIN on a generated variant proves nothing about other
+  regions.
+- Sanitization: decode before redacting; scan with independent patterns.
+- Report format: alias chain and provider column, supply-chain exposure section,
+  counts taken from tool totals.
+- Tests: add sanitizer and host-probe suites, including regressions for the
+  percent-encoded identifier leak, the self-scan blind spot and the host count.
+
 ## 0.1.0 — Initial repository handoff, 2026-09-15
 
 - Export the existing installed Security Colleague workflows and scripts; update provenance notes for publication.

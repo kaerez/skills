@@ -51,7 +51,16 @@ def validate():
             compile(script.read_text(encoding='utf-8'), script.name, 'exec')
         for script in re.findall(r'`(scripts/[^`]+\.py)`', body):
             assert (core / script).is_file(), script
-    print('PASS: catalogs, package names/versions, markings, relative references, and Python syntax')
+        documented = set(re.findall(r'`(scripts/[^`]+\.py)`', body))
+        bundled = {'scripts/' + script.name for script in (core / 'scripts').glob('*.py')}
+        assert bundled <= documented, ('undocumented scripts', sorted(bundled - documented))
+        changelog = (plugin / 'CHANGELOG.md').read_text(encoding='utf-8')
+        headings = re.findall(r'^## (\d+\.\d+\.\d+)', changelog, re.M)
+        assert headings, 'CHANGELOG.md has no version heading'
+        assert headings[0] == om['version'], ('changelog version', headings[0], om['version'])
+        assert 'TLP:GREEN' in changelog and '(C) Erez Kalman' in changelog
+    print('PASS: catalogs, package names/versions, changelog sync, markings, '
+          'script documentation, relative references, and Python syntax')
 
 
 if __name__ == '__main__':
