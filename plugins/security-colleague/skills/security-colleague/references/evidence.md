@@ -14,6 +14,10 @@ Preserve originals in the authorized environment and work on derivatives. Record
 | Browser simulation blocked a request | A production firewall or endpoint policy does so |
 | UI element is hidden | API, native client or existing-session access is blocked |
 | Package/version string is present | That component runs on the vulnerable path |
+| Delivered client code contains an authoring or upload path | The endpoint is reachable, authorized, or that the operation would succeed |
+| A sanitized output passed a scan | The output is clean, when the scan reused the redactor's own patterns or skipped percent-decoding |
+| A hostname resolves | A service answers there, or the name is in use for this workflow |
+| A generated hostname variant returns NXDOMAIN | The vendor has no other regions or clusters |
 
 Prefer vendor advisories, documentation, release notes, standards, source repositories and maintainer reports. Use secondary sources as leads and label reliance on them. Verify the exact feature, edition/license, deployment, client support and version range before producing native configuration.
 

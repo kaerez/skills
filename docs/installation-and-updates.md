@@ -2,7 +2,7 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
-Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Initial package version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
+Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Current package version: `0.2.0`. Initial published version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
 
 ## Status
 
@@ -40,6 +40,16 @@ Keep one source copy of each core skill. Before releasing changed content, incre
 Run validation, review the diff, and record the actual GitHub commit after upload. The publishing commit in this repository records the exact source revision; no release tag has been created. Tag reviewed releases, for example `security-colleague-v0.1.0`. Keep local edits in a separate branch; commit or back them up before refreshing, and never automatically overwrite a dirty checkout. For rollback, select a known-good immutable revision where the client supports pinning, or restore reviewed content in a new release with a higher version. Confirm the installed version afterward.
 
 Repository refresh, installed-package update, and active-session reload are separate events. Claude Code can require `/reload-plugins` or a new session after a background update. Follow the actual Codex client's documented reload behavior; it remains unverified here. Keep credentials in platform credential stores, not skill files. Do not describe updates as working until each destination has fetched, installed, and loaded a changed version.
+
+## Validation record
+
+`0.2.0`, 2026-09-15, Python 3.12.3 on Linux: `tools/validate_repository.py`
+passed and the full regression suite passed, including new sanitizer and
+host-probe suites. The host-probe wire codec is exercised against a local stub
+resolver, so the tests need no outbound DNS. Not run for this release: remote
+GitHub Actions, macOS and Windows jobs, ChatGPT workspace import, local Codex or
+Claude installation, automatic updates, session reloads, and any live enforcement
+test. No real capture is included in the repository.
 
 ## Compatibility limits
 

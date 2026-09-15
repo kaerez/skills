@@ -8,6 +8,7 @@ Intended repository: https://github.com/kaerez/skills. Package: `plugins/securit
 | --- | --- |
 | Instruction analysis | Host can read the skill and relevant evidence |
 | Bundled HAR tools | Python 3.12 and authorized file access are the tested baseline; standard library only; verify other runtimes |
+| Bundled host probe | Outbound DNS on UDP/TCP 53 to the selected resolvers, or a usable system resolver; standard library only; no HTTP and no DNS-over-HTTPS |
 | Deep parsing/targeted sanitization | Suitable parsers, schemas, detectors and versions; declare missing coverage |
 | Regex execution | Actual requested engine/version; otherwise deliver a harness and label predictions untested |
 | Current research | Authorized research/network tools; otherwise state evidence dates and currency limits |

@@ -6,9 +6,9 @@ Individually installable skills. Publication source: https://github.com/kaerez/s
 
 | Package | Version | Core skill |
 | --- | --- | --- |
-| Security Colleague | 0.1.0 | [Instructions](plugins/security-colleague/skills/security-colleague/SKILL.md) |
+| Security Colleague | 0.2.0 | [Instructions](plugins/security-colleague/skills/security-colleague/SKILL.md) |
 
-Security Colleague reviews consumption-only service access, shared dependencies, enforcement options, HAR/web evidence, sanitization, regex, browser versions, and scoped security findings. It asks about available controls, client scope, and report depth. Its bundled Python tools provide host inventory and lossy HAR minimization. Deeper parsing and multilingual entity detection require suitable tools and verification; they are not bundled universal sanitizers.
+Security Colleague reviews consumption-only service access, shared dependencies, enforcement options, HAR/web evidence, sanitization, regex, browser versions, and scoped security findings. It asks about available controls, client scope, and report depth. Its bundled Python tools provide a HAR host inventory, a route-level HAR sanitizer, a lossy HAR minimizer, and a DNS-only host probe. Deeper parsing and multilingual entity detection require suitable tools and verification; they are not bundled universal sanitizers, and the host probe resolves names rather than testing reachability.
 
 See [installation and updates](docs/installation-and-updates.md) for platform-specific instructions and unverified items. Both catalogs use the marketplace name `ksec` (displayed as `KSEC` in the OpenAI catalog).
 

@@ -25,14 +25,28 @@ Include downloads, live participation, comments, or similar actions only when th
 
 ## Domain decisions
 
-| Exact hostname or explicit pattern | Role and covered workflow | Evidence, date, confidence | Recommended action / scenario | Consumption loss if blocked | Additional capability or exposure if allowed |
-| --- | --- | --- | --- | --- | --- |
+| Exact hostname or explicit pattern | Alias chain and terminating provider | Role and covered workflow | Evidence, date, confidence | Recommended action / scenario | Consumption loss if blocked | Additional capability or exposure if allowed |
+| --- | --- | --- | --- | --- | --- | --- |
+
+Fill the alias column from an actual resolution, and flag where an allowed host
+and a blocked host terminate on the same provider namespace. Take host counts
+from the tool's `totals` block; do not count rows by hand.
 
 Use **Allow**, **Block**, **Conditional**, or **Unresolved**. Keep the last two out of the unconditional allow set. Separate required viewing hosts, viewer-registration dependencies, dedicated prohibited-function hosts, shared dependencies, and optional requests using rows or a short grouping column as needed.
 
 Attach a supporting primary-source link or capture reference near each material role/necessity claim. Mark a role inferred from a name as unverified. Explain global/shared-provider effects in the affected row; don't hide them in a generic warning.
 
 Show exact-host and wildcard semantics and policy scope. If the platform is unknown, label syntax as vendor-neutral intent. Give an actionable exact-host set where evidence supports it; do not refuse all analysis merely because some hosts remain unknown. State explicitly when a sample does not support a complete list.
+
+## Supply-chain exposure
+
+Where an allowed host serves runtime third-party code, say so in its own short
+table: the host, what it delivers, the pinned version if visible, whether
+subresource integrity was assessed, and what executes in the page's context if
+that host is compromised. A page that collects personal data while loading
+executable code from a public CDN is a vendor design observation to raise with
+the vendor, not a rule the policy can fix. Keep it separate from the allow/block
+decision so it is not mistaken for one.
 
 ## Overlap options
 
