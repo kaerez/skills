@@ -169,12 +169,12 @@ class HostProbeTests(unittest.TestCase):
         self.assertEqual(result['chain'], [])
 
     def test_variant_generation_covers_region_and_cluster_siblings(self):
-        generated = probe.variants('backend.public-pr50.synthetic.invalid', ['eu'], 1)
-        self.assertIn('backend.eu.public-pr50.synthetic.invalid', generated)
-        self.assertIn('backend.public-pr49.synthetic.invalid', generated)
-        self.assertIn('backend.public-pr51.synthetic.invalid', generated)
-        self.assertIn('backend.public-preu-50.synthetic.invalid', generated)
-        self.assertIn('backend.public-pr50.synthetic.invalid', generated)
+        generated = probe.variants('backend.cluster-50.synthetic.invalid', ['eu'], 1)
+        self.assertIn('backend.eu.cluster-50.synthetic.invalid', generated)
+        self.assertIn('backend.cluster-49.synthetic.invalid', generated)
+        self.assertIn('backend.cluster-51.synthetic.invalid', generated)
+        self.assertIn('backend.cluster-eu-50.synthetic.invalid', generated)
+        self.assertIn('backend.cluster-50.synthetic.invalid', generated)
         for name in generated:
             self.assertRegex(name, probe.HOSTNAME)
 

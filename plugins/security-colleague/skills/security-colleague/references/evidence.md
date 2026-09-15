@@ -18,6 +18,10 @@ Preserve originals in the authorized environment and work on derivatives. Record
 | A sanitized output passed a scan | The output is clean, when the scan reused the redactor's own patterns or skipped percent-decoding |
 | A hostname resolves | A service answers there, or the name is in use for this workflow |
 | A generated hostname variant returns NXDOMAIN | The vendor has no other regions or clusters |
+| A hostname returns NXDOMAIN | The capability is absent; it may be a path on another host, a tenant domain, or a backend configured in shipped code but not yet resolvable |
+| A host list came from a bounded sweep | The list is complete |
+| The enumerated prohibited hosts are blocked | The prohibited action is blocked, when an allowed host also serves it |
+| A subagent or parallel task reported a host set | The set is complete, or that its members were observed rather than guessed |
 
 Prefer vendor advisories, documentation, release notes, standards, source repositories and maintainer reports. Use secondary sources as leads and label reliance on them. Verify the exact feature, edition/license, deployment, client support and version range before producing native configuration.
 
