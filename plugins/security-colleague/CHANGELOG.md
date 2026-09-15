@@ -4,9 +4,10 @@
 
 ## 0.2.0 — Retrieval ladder and route-level evidence, 2026-09-15
 
-Verified locally on Python 3.12.3 (Linux): repository validation and the full
-regression suite pass. Unverified: remote CI, macOS and Windows jobs, any client
-installation, update or session reload, and live enforcement behaviour.
+Verified: repository validation and all 41 regression tests pass on Python 3.12
+on Linux, macOS and Windows ([CI run](https://github.com/kaerez/skills/actions/runs/34990618029)).
+Unverified: any client installation, update or session reload, and live
+enforcement behaviour.
 
 - Add `scripts/har_sanitize.py`: route-level sanitized HAR derivative that keeps
   method, decoded path shape, operation name, status and MIME type while removing

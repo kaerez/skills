@@ -43,14 +43,18 @@ Repository refresh, installed-package update, and active-session reload are sepa
 
 ## Validation record
 
-`0.2.0`, 2026-09-15, Python 3.12.3 on Linux: `tools/validate_repository.py`
-passed and the full regression suite passed, including new sanitizer and
-host-probe suites. The host-probe wire codec is exercised against a local stub
-resolver, so the tests need no outbound DNS. Not run for this release: remote
-GitHub Actions, macOS and Windows jobs, ChatGPT workspace import, local Codex or
-Claude installation, automatic updates, session reloads, and any live enforcement
-test. No real capture is included in the repository.
+`0.2.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
+full regression suite on Python 3.12 across Linux, macOS and Windows: validation
+passed and all 41 tests passed on every job.
+[Verified run for 0.2.0](https://github.com/kaerez/skills/actions/runs/34990618029). The suite was also re-run locally on Python
+3.11.15 (Linux) before the push, with the same result; 3.12 remains the tested
+baseline and the CI run is the evidence for it. The host-probe wire codec is
+exercised against a local stub resolver, so the tests need no outbound DNS.
+
+Not run for this release: ChatGPT workspace import, local Codex or Claude
+installation, automatic updates, session reloads, and any live enforcement test.
+No real capture is included in the repository.
 
 ## Compatibility limits
 
-The shared instructions avoid proprietary tool names as core requirements; scripts use Python's standard library. Local validation uses Python 3.12 on Linux. GitHub Actions passed the repository checks and all 8 synthetic HAR tests on Linux, macOS, and Windows. [Verified run for the published package](https://github.com/kaerez/skills/actions/runs/34972621145). Neither Claude Code nor local Codex is installed in the validation environment. Manifest validation and readable Markdown do not establish end-to-end compatibility. No live service enforcement tests were run for this handoff.
+The shared instructions avoid proprietary tool names as core requirements; scripts use Python's standard library. Local validation uses Python 3.12 on Linux. GitHub Actions passed the repository checks and all 41 synthetic tests on Linux, macOS, and Windows. [Verified run for the published package](https://github.com/kaerez/skills/actions/runs/34990618029); the [0.1.0 run](https://github.com/kaerez/skills/actions/runs/34972621145) covered 8 tests. Neither Claude Code nor local Codex is installed in the validation environment. Manifest validation and readable Markdown do not establish end-to-end compatibility. No live service enforcement tests were run for this handoff.
