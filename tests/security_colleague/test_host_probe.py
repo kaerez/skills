@@ -84,6 +84,46 @@ TABLE = {
 }
 
 
+class ForgingResolver:
+    """Receives on one port and replies from another, as an off-path forger does."""
+
+    def __init__(self, table):
+        self.table = table
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind(('127.0.0.1', 0))
+        self.spoof = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.spoof.bind(('127.0.0.1', 0))
+        self.address, self.port = self.sock.getsockname()
+        self.running = True
+        self.thread = threading.Thread(target=self.serve, daemon=True)
+        self.thread.start()
+
+    def serve(self):
+        self.sock.settimeout(0.5)
+        while self.running:
+            try:
+                data, peer = self.sock.recvfrom(4096)
+            except socket.timeout:
+                continue
+            except OSError:
+                return
+            qid = struct.unpack('!H', data[:2])[0]
+            try:
+                name, _ = probe.decode_name(data, 12)
+            except ValueError:
+                continue
+            records, rcode = self.table.get(name.lower(), ([], 3))
+            try:
+                self.spoof.sendto(answer_packet(qid, name, records, rcode), peer)
+            except OSError:
+                return
+
+    def stop(self):
+        self.running = False
+        self.sock.close()
+        self.spoof.close()
+
+
 class HostProbeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -178,6 +218,34 @@ class HostProbeTests(unittest.TestCase):
     def test_truncated_response_is_rejected_not_guessed(self):
         with self.assertRaises(ValueError):
             probe.parse_response(b'\x00\x01', 1)
+
+    def test_reply_from_another_source_address_is_discarded(self):
+        """The socket is connected, so the kernel drops off-path datagrams."""
+        forger = ForgingResolver(TABLE)
+        try:
+            answer = probe.ask(forger.address, 'plain.synthetic.invalid', 'A',
+                               timeout=0.4, retries=1, port=forger.port)
+        finally:
+            forger.stop()
+        self.assertIn('error', answer)
+        self.assertNotIn('answers', answer)
+
+    def test_response_bit_must_be_set(self):
+        """A query replayed back at the client is not an answer."""
+        packet = answer_packet(7, 'plain.synthetic.invalid',
+                               [('plain.synthetic.invalid', 'A', '203.0.113.12')])
+        query_flags = struct.pack('!H', 0x0100)
+        forged = packet[:2] + query_flags + packet[4:]
+        with self.assertRaises(ValueError):
+            probe.parse_response(forged, 7)
+
+    def test_question_section_must_echo_the_query(self):
+        """An answer for a name we never asked about is not ours."""
+        packet = answer_packet(7, 'other.synthetic.invalid',
+                               [('other.synthetic.invalid', 'A', '203.0.113.99')])
+        self.assertEqual(probe.parse_response(packet, 7)['rcode'], 0)
+        with self.assertRaises(ValueError):
+            probe.parse_response(packet, 7, 'plain.synthetic.invalid')
 
 
 if __name__ == '__main__':

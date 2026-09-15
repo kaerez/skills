@@ -18,6 +18,11 @@ installation, update or session reload, and live enforcement behaviour.
   resolvers, alias-chain and terminating-provider reporting, regional and cluster
   variant enumeration, cross-resolver divergence detection and a zero-query
   `--dry-run`. Sends no HTTP.
+- `scripts/host_probe.py`: accept a DNS answer only from the resolver actually
+  queried (the datagram socket is connected, so the kernel discards off-path
+  replies), require the response bit, and require the question section to echo
+  the name asked. Answers remain unauthenticated: there is no DNSSEC validation
+  and an on-path attacker can still forge one.
 - `scripts/har_inventory.py`: report `totals` including host counts and hosts
   shared across workflows; `schema_version` 1 to 2. Fixes reviews quoting a
   hand-counted host total.

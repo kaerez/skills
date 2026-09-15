@@ -98,18 +98,31 @@ def build_query(name, qtype, qid):
     return header + encode_name(name) + struct.pack("!HH", qtype, 1)
 
 
-def parse_response(data, qid):
+def parse_response(data, qid, question=None):
+    """Accept an answer only if it is a reply to the query actually sent.
+
+    The transaction id alone is 16 bits. Require the response bit and, when the
+    caller supplies the name it asked for, require the question section to echo
+    it. This raises the cost of an off-path forgery; it does not authenticate
+    the answer, which still has no DNSSEC validation.
+    """
     if len(data) < 12:
         raise ValueError("Short response")
     rid, flags, qdcount, ancount, _, _ = struct.unpack("!HHHHHH", data[:12])
     if rid != qid:
         raise ValueError("Transaction id mismatch")
+    if not flags & 0x8000:
+        raise ValueError("Not a response")
     truncated = bool(flags & 0x0200)
     rcode = flags & 0x000F
     offset = 12
+    asked = []
     for _ in range(qdcount):
-        _, offset = decode_name(data, offset)
+        echoed, offset = decode_name(data, offset)
+        asked.append(echoed.lower().rstrip("."))
         offset += 4
+    if question is not None and asked != [question.lower().rstrip(".")]:
+        raise ValueError("Question section does not echo the query")
     answers = []
     for _ in range(ancount):
         owner, offset = decode_name(data, offset)
@@ -130,7 +143,11 @@ def parse_response(data, qid):
 
 
 def ask(resolver, name, qtype, timeout, retries=2, port=53):
-    """One UDP query with TCP fallback on truncation. No HTTP, no DoH."""
+    """One UDP query with TCP fallback on truncation. No HTTP, no DoH.
+
+    The datagram socket is connected before sending so the kernel discards
+    replies from any source other than the chosen resolver.
+    """
     last = None
     for _ in range(retries):
         qid = random.SystemRandom().randrange(1, 65535)
@@ -139,9 +156,10 @@ def ask(resolver, name, qtype, timeout, retries=2, port=53):
         try:
             with socket.socket(family, socket.SOCK_DGRAM) as sock:
                 sock.settimeout(timeout)
-                sock.sendto(packet, (resolver, port))
-                data, _ = sock.recvfrom(4096)
-            parsed = parse_response(data, qid)
+                sock.connect((resolver, port))
+                sock.send(packet)
+                data = sock.recv(4096)
+            parsed = parse_response(data, qid, name)
             if not parsed["truncated"]:
                 return parsed
             with socket.socket(family, socket.SOCK_STREAM) as sock:
@@ -156,7 +174,7 @@ def ask(resolver, name, qtype, timeout, retries=2, port=53):
                     if not chunk:
                         break
                     body += chunk
-            return parse_response(body, qid)
+            return parse_response(body, qid, name)
         except (OSError, ValueError, struct.error) as error:
             last = "%s: %s" % (type(error).__name__, error)
     return {"error": last or "no answer"}
@@ -300,8 +318,10 @@ def main():
             "Addresses rotate; do not build address-based rules from this output.",
             "Provider classification comes from alias suffixes and may be incomplete.",
             "Generated variants are candidates, not evidence of vendor architecture.",
-            "Answers are unauthenticated: no DNSSEC validation, and plain UDP/TCP 53 is spoofable "
-            "on a hostile path. Corroborate across resolvers and treat this as discovery, not proof.",
+            "Answers are unauthenticated: no DNSSEC validation. Replies from a source other than "
+            "the chosen resolver are discarded, and the question section must echo the query, but "
+            "an on-path attacker can still forge an answer. Corroborate across resolvers and treat "
+            "this as discovery, not proof.",
         ],
         "resolvers": [item["label"] for item in selected],
         "excluded_resolvers": sorted(excluded),

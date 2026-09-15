@@ -14,8 +14,6 @@ Create a timeline: identity/role and session -> user action -> DOM element/frame
 
 Identify shared GraphQL/RPC paths, batched operations, WebSockets, WebTransport, service workers, signed media/storage URLs, redirects, embeds and custom tenant domains. Methods are evidence, not business permissions. Check playback segments, captions, DRM/license requests and session refresh where they affect consumption.
 
-| Material | Investigate | Limits to record |
-| --- | --- | --- |
 For a consumption-only review, this inspection is part of the analysis, not an
 optional extra. Retrieve the landing document, follow its script, stylesheet,
 iframe and form-action references, and read the delivered bundles for hostnames,
@@ -24,6 +22,8 @@ a supplied capture already contains response bodies, the bundles are in hand.
 Shipped client code establishes capability only: record it as delivered, and keep
 reachability and operation success as separate questions.
 
+| Material | Investigate | Limits to record |
+| --- | --- | --- |
 | DOM/HTML/accessibility trees | Forms, hidden fields, links/share permissions, iframes, shadow roots, rendered states, bindings | Visibility is not authorization; cross-origin frames and closed shadow roots may be unavailable |
 | JS/modules/source maps | Parsed syntax, imports, bundles, request clients, SDKs, endpoints, flags, authentication and mapped source | Strings may be dead code; banners and minified names are weak version evidence |
 | CSS/assets | Imports, URLs, generated content, comments, source maps and embedded data | Sensitive data can occur here; hiding controls does not enforce permissions |
