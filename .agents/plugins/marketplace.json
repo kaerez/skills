@@ -1,7 +1,7 @@
 {
-  "name": "personal",
+  "name": "ksec",
   "interface": {
-    "displayName": "Personal"
+    "displayName": "KSEC"
   },
   "plugins": [
     {
