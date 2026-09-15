@@ -43,4 +43,4 @@ Repository refresh, installed-package update, and active-session reload are sepa
 
 ## Compatibility limits
 
-The shared instructions avoid proprietary tool names as core requirements; scripts use Python's standard library. Local validation uses Python 3.12 on Linux. The CI file proposes Linux, macOS, and Windows checks; remote CI has not run. Neither Claude Code nor local Codex is installed in the validation environment. Manifest validation and readable Markdown do not establish end-to-end compatibility. No live service enforcement tests were run for this handoff.
+The shared instructions avoid proprietary tool names as core requirements; scripts use Python's standard library. Local validation uses Python 3.12 on Linux. GitHub Actions passed the repository checks and all 8 synthetic HAR tests on Linux, macOS, and Windows. [Verified run for the published package](https://github.com/kaerez/skills/actions/runs/34972621145). Neither Claude Code nor local Codex is installed in the validation environment. Manifest validation and readable Markdown do not establish end-to-end compatibility. No live service enforcement tests were run for this handoff.

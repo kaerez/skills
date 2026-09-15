@@ -8,4 +8,6 @@
 - Repository checks: catalogs, names, versions, markings, relative references, and Python syntax passed.
 - Archive integrity and all member hashes checked during handoff.
 
-Not run: GitHub Actions, macOS/Windows jobs, local Codex or Claude installation, workspace import, automatic updates, reloads, or live enforcement tests. Tests do not prove universal sanitization or language-aware detection. No real captures are included.
+GitHub Actions passed repository validation and all 8 HAR tests on Ubuntu, Windows, and macOS for published commit `140569c81a4611ae6688cdaeddbe26ce46de57fa`. [Verified CI run](https://github.com/kaerez/skills/actions/runs/34972621145). All 29 package file Git blob hashes matched the published tree; the existing LICENSE blob was preserved.
+
+Not run: local Codex or Claude installation, workspace import, automatic updates, reloads, or live enforcement tests. Tests do not prove universal sanitization or language-aware detection. No real captures are included.
