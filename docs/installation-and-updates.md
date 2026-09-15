@@ -43,6 +43,13 @@ Repository refresh, installed-package update, and active-session reload are sepa
 
 ## Validation record
 
+`0.3.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
+full regression suite on Python 3.12 across Linux, macOS and Windows: validation
+passed and all 59 tests passed on every job — 41 inherited plus 18 for the new
+rule-coverage check. [Verified run for 0.3.0](https://github.com/kaerez/skills/actions/runs/34998754101).
+The suite was also re-run locally on Python 3.11.15 (Linux) before the push,
+with the same result.
+
 `0.2.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
 full regression suite on Python 3.12 across Linux, macOS and Windows: validation
 passed and all 41 tests passed on every job.

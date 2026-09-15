@@ -4,10 +4,10 @@
 
 ## 0.3.0 — Enumeration completeness, capture triggers, rule-shape verdict, 2026-09-15
 
-Verified locally on Python 3.11.15 (Linux): repository validation and all 59
-regression tests pass, 41 inherited plus 18 for the new rule-coverage check.
-Unverified until the release run: Python 3.12 on Linux, macOS and Windows; any
-client installation, update or session reload; and live enforcement behaviour.
+Verified: repository validation and all 59 regression tests pass on Python 3.12
+on Linux, macOS and Windows ([CI run](https://github.com/kaerez/skills/actions/runs/34998754101)) — 41
+inherited plus 18 for the new rule-coverage check. Unverified: any client
+installation, update or session reload, and live enforcement behaviour.
 
 Two reviewed transcripts of one consumption review, both running 0.2.0, failed
 the same way: each produced a host blocklist that read as complete, stated its
