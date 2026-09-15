@@ -17,10 +17,16 @@ Identify shared GraphQL/RPC paths, batched operations, WebSockets, WebTransport,
 For a consumption-only review, this inspection is part of the analysis, not an
 optional extra. Retrieve the landing document, follow its script, stylesheet,
 iframe and form-action references, and read the delivered bundles for hostnames,
-API paths, operation names and authoring routes before asking for a capture. When
-a supplied capture already contains response bodies, the bundles are in hand.
-Shipped client code establishes capability only: record it as delivered, and keep
-reachability and operation success as separate questions.
+API paths, operation names and authoring routes before asking for a capture. Do
+this for both applications: the permitted surface's client names the hosts
+consumption needs; the prohibited surface's client names the hosts the prohibited
+action needs, and those are the ones a blocking decision turns on. Retrieving only
+the supplied page enumerates only half the problem. When a supplied capture
+already contains response bodies, the bundles are in hand. Shipped client code
+establishes capability only: record it as delivered, and keep reachability and
+operation success as separate questions. A backend named in an application's
+shipped configuration is evidence that the name is in use even when it does not
+resolve from the analyst's network.
 
 | Material | Investigate | Limits to record |
 | --- | --- | --- |

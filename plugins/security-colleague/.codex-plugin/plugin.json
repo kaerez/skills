@@ -1,6 +1,6 @@
 {
   "name": "security-colleague",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Evidence-led consumption-only access reviews and security investigation.",
   "author": {
     "name": "Erez Kalman"

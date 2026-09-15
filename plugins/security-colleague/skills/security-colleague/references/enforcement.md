@@ -37,6 +37,16 @@ Treat stronger controls as conditional proposals until current primary documenta
 - Treat a DNS alias target and a browser redirect as different dependencies. A CNAME does not by itself change the HTTP hostname or create a separate browser request. Whether the alias also needs an exception depends on the DNS engine's evaluation.
 - Track geography, tenant, custom-domain, cluster, and signed-media host variation when observed or documented. One numbered host does not justify a wildcard for every cluster. Avoid presenting one sample's host set as globally complete.
 
+Enumerating to block and enumerating to allow are not symmetric, and the
+asymmetry decides the rule shape. A blocklist must be complete to work: every
+host it misses stays reachable, the failure is silent, and no amount of searching
+proves the set is done. An allowlist must also be complete, but its failures are
+loud and self-correcting: a missed host breaks consumption, someone reports it,
+and it is added. Prefer the shape whose failure mode is visible. Where a
+default-deny for the service is available, put it beneath validated consumption
+allows and keep explicit blocks only for prohibited hosts that share a parent
+with permitted ones.
+
 ## Look beyond obvious pages
 
 Trace the requested landing page, redirects, embeds, player, assets, APIs, identity, CAPTCHA, and media delivery. For playback, check manifests, segments, range requests/seeking, captions, signed-URL refresh, and license services if present. Keep live-event speaker/WebRTC dependencies separate from on-demand viewing unless evidence shows they are required.
@@ -92,7 +102,7 @@ Reopen the relevant sources when conducting a live analysis; these are research 
 
 - [Cloudflare DNS policies](https://developers.cloudflare.com/cloudflare-one/traffic-policies/dns-policies/): examples of exact-host versus domain matching and DNS response/CNAME evaluation. Apply its semantics only to that product.
 - [Cloudflare HTTP policies](https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/): examples of HTTPS inspection requirements and URL/method selectors. Verify the selected engine independently.
-- [Canva firewall guidance](https://www.canva.com/help/allow-canva-through-firewall/): full-product connectivity candidates; do not turn the broad list into a consumption-only recommendation.
-- [Canva sharing and guest permissions](https://www.canva.com/help/collaborate-with-anyone-variantb/): investigate anonymous editing and permission-dependent share links. Do not equate blocking login with blocking editing.
-- [Goldcast network and firewall guidance](https://help.goldcast.io/en_US/troubleshooting/4408141111323-configuring-your-connection-settings-network-vpn-and-firewall): distinguish general event, speaker, streaming, and on-demand requirements.
-- [Goldcast attendee guide](https://help.goldcast.io/en_US/for-attendees/4404983265947-the-goldcast-attendee-guide): investigate attendee registration/magic links and participation capabilities separately from organizer authoring. Do not adopt advice to disable organizational security controls.
+- A platform's own allowlist or connectivity article: full-product connectivity candidates; do not turn the broad list into a consumption-only recommendation.
+- A platform's sharing and guest-permission documentation: investigate anonymous editing and permission-dependent share links. Do not equate blocking login with blocking editing.
+- A platform's own network and firewall guidance: distinguish general event, speaker, streaming and on-demand requirements; treat the list as discovery candidates, not a recommendation.
+- A platform's attendee or viewer guide: investigate registration and magic links and participation capabilities separately from authoring. Do not adopt advice to disable organizational security controls.

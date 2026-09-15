@@ -44,19 +44,62 @@ ran, which the environment refused, and what each produced.
    response bodies, those bundles are already in hand and cost nothing to inspect.
    Delivered code proves the client ships a capability; it does not prove the
    endpoint is reachable or that the operation would succeed. Label it that way.
-5. **Resolve every candidate host** with `../scripts/host_probe.py`: alias chain,
+5. **Retrieve the prohibited surface's own application.** The supplied URL is
+   usually the permitted surface; the hosts that serve the prohibited one are
+   declared in *its* client. Fetch the authoring console, admin application or
+   creator entry point named in documentation, and read its configuration and
+   bundles for API backends, upload endpoints and feature hosts. Configuration
+   shipped in code outranks a negative DNS result: a name absent from DNS can
+   still be a configured backend, a path on another host, or a tenant domain.
+6. **Resolve every candidate host** with `../scripts/host_probe.py`: alias chain,
    terminating provider, and the documented and undocumented regional and cluster
    variants. Honour any instruction about which resolvers to use or avoid.
-6. **Mine the organization's own gateway, firewall or proxy events** for the
+7. **Mine the organization's own gateway, firewall or proxy events** for the
    service. Existing telemetry enumerates the hosts users actually reach,
    including regional and vanity hosts, at no test-traffic cost.
-7. **Only then request evidence**, naming the single smallest capture or log
+8. **Only then request evidence**, naming the single smallest capture or log
    extract that would resolve what is still open.
+
+Rungs 3 to 6 are independent per surface. Where the host offers subagents, tasks
+or parallel execution, fan the enumeration out across the distinct surfaces at
+once: the permitted application, the prohibited application, published API
+documentation, DNS regional and cluster variants, and the organization's own
+gateway logs. One serial pass over one surface is how a region, or an entire
+application, goes unenumerated. Each returned report is a claim to verify under
+the same evidence labels as any other source, not a result to adopt. Where the
+host offers no such capability, run the surfaces serially and say so in the
+coverage statement.
 
 Stop conditions worth stating plainly: a tool refusing a URL is a capability
 limit to record and route around, not a fact about the service; an empty result
 from one rung does not close the next; and none of this authorizes submitting a
 form, registering, signing in or changing a control.
+
+### State the bound with the set
+
+Publish every enumerated set with its method and its bound in the same breath:
+which surfaces were searched, what the method would not have found, and whether
+anything outside the set is permitted by default. Volunteer this at the first
+host list; never wait to be asked whether the set is complete. If a user supplies
+a host the analysis should have found, that is a finding about the method. Widen
+it, re-run it, and say what else the same gap would have hidden.
+
+### When to request a capture
+
+A capture request is a triggered step, not a last resort. Any one of these
+requires asking now, naming the smallest sufficient capture:
+
+- A host that would enter the decision table as Unresolved.
+- A host serving both permitted and prohibited operations where the decision
+  turns on which.
+- A prohibited capability found in shipped code with no observed request.
+- A rule shape that cannot be chosen without knowing whether a shared host
+  carries writes.
+
+Make the ask specific: which workflow, which surface, what it must contain. State
+that the capture is sanitized with `../scripts/har_sanitize.py` before it is
+sent. Requesting a capture is not a failure of the ladder; continuing to answer
+without one, when a trigger has fired, is.
 
 ## Research the actual flows
 

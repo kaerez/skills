@@ -6,9 +6,12 @@ Intended repository: https://github.com/kaerez/skills. Package: `plugins/securit
 
 | Capability | Requirement/fallback |
 | --- | --- |
+| Model and reasoning effort | Report what the current product exposes and where that value came from; state plainly when it exposes neither. A weaker model or a reduced effort setting degrades every judgment here |
 | Instruction analysis | Host can read the skill and relevant evidence |
+| Parallel enumeration | Host subagent or task capability; otherwise enumerate the surfaces serially and state that in the coverage statement |
 | Bundled HAR tools | Python 3.12 and authorized file access are the tested baseline; standard library only; verify other runtimes |
 | Bundled host probe | Outbound DNS on UDP/TCP 53 to the selected resolvers, or a usable system resolver; standard library only; no HTTP and no DNS-over-HTTPS |
+| Bundled rule coverage check | Python 3.12 and an evidence host list; standard library only; no network and no DNS |
 | Deep parsing/targeted sanitization | Suitable parsers, schemas, detectors and versions; declare missing coverage |
 | Regex execution | Actual requested engine/version; otherwise deliver a harness and label predictions untested |
 | Current research | Authorized research/network tools; otherwise state evidence dates and currency limits |

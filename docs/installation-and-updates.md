@@ -2,7 +2,7 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
-Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Current package version: `0.2.0`. Initial published version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
+Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Current package version: `0.3.0`. Initial published version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
 
 ## Status
 
@@ -42,6 +42,13 @@ Run validation, review the diff, and record the actual GitHub commit after uploa
 Repository refresh, installed-package update, and active-session reload are separate events. Claude Code can require `/reload-plugins` or a new session after a background update. Follow the actual Codex client's documented reload behavior; it remains unverified here. Keep credentials in platform credential stores, not skill files. Do not describe updates as working until each destination has fetched, installed, and loaded a changed version.
 
 ## Validation record
+
+`0.3.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
+full regression suite on Python 3.12 across Linux, macOS and Windows: validation
+passed and all 59 tests passed on every job — 41 inherited plus 18 for the new
+rule-coverage check. [Verified run for 0.3.0](https://github.com/kaerez/skills/actions/runs/34998754101).
+The suite was also re-run locally on Python 3.11.15 (Linux) before the push,
+with the same result.
 
 `0.2.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
 full regression suite on Python 3.12 across Linux, macOS and Windows: validation
