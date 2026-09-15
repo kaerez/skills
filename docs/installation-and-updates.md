@@ -2,7 +2,7 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
-Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Initial package version: `0.1.0`. Both catalogs use marketplace name `personal`; plugin name is `security-colleague`. Avoid registering a second unrelated marketplace with that same name; rename both catalog names together before first installation if needed.
+Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Initial package version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
 
 ## Status
 
@@ -24,10 +24,10 @@ Use a Git repository source, not the raw marketplace JSON URL, so relative packa
 
 ```sh
 claude plugin marketplace add https://github.com/kaerez/skills.git
-claude plugin install security-colleague@personal
+claude plugin install security-colleague@ksec
 ```
 
-Use `/plugin` → Marketplaces → personal → Enable auto-update if desired. Third-party marketplace automatic updates are disabled by default. Use the host credential mechanism; do not embed tokens in this repository. These commands and settings are documentation-based, not installation-tested. [Marketplace sources](https://code.claude.com/docs/en/plugin-marketplaces), [plugin updates](https://code.claude.com/docs/en/discover-plugins), checked 2026-09-15.
+Use `/plugin` → Marketplaces → ksec → Enable auto-update if desired. Third-party marketplace automatic updates are disabled by default. Use the host credential mechanism; do not embed tokens in this repository. These commands and settings are documentation-based, not installation-tested. [Marketplace sources](https://code.claude.com/docs/en/plugin-marketplaces), [plugin updates](https://code.claude.com/docs/en/discover-plugins), checked 2026-09-15.
 
 ## Claude chat and APIs
 

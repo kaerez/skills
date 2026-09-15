@@ -10,7 +10,7 @@ Individually installable skills. Publication source: https://github.com/kaerez/s
 
 Security Colleague reviews consumption-only service access, shared dependencies, enforcement options, HAR/web evidence, sanitization, regex, browser versions, and scoped security findings. It asks about available controls, client scope, and report depth. Its bundled Python tools provide host inventory and lossy HAR minimization. Deeper parsing and multilingual entity detection require suitable tools and verification; they are not bundled universal sanitizers.
 
-See [UPLOAD.md](UPLOAD.md) for exact file destinations and [installation and updates](docs/installation-and-updates.md) for platform-specific instructions and unverified items.
+See [installation and updates](docs/installation-and-updates.md) for platform-specific instructions and unverified items. Both catalogs use the marketplace name `ksec` (displayed as `KSEC` in the OpenAI catalog).
 
 Both platform catalogs reference `plugins/security-colleague/`. The shared core is self-contained under `plugins/security-colleague/skills/security-colleague/`; future packages belong in `plugins/<skill-name>/` and receive separate versions and catalog entries.
 
