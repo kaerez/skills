@@ -25,7 +25,7 @@ def _columns(row):
     Backtick spans are removed before splitting, so a pipe inside an inline code
     span such as `a|b` is cell text rather than a column delimiter.
     """
-    cells = re.sub(r'`[^`]*`', '', row.strip())
+    cells = re.sub(r'\\\|', '', re.sub(r'`[^`]*`', '', row.strip()))
     if cells.startswith('|'):
         cells = cells[1:]
     if cells.endswith('|'):
@@ -36,11 +36,19 @@ def _columns(row):
 def _check_tables(doc, text):
     """Assert each table is a header row, a separator row, then data rows only."""
     lines = text.split('\n')
-    fenced = False
+    fence = None
     for index, line in enumerate(lines):
-        if line.startswith('```'):
-            fenced = not fenced
-        if fenced or not re.fullmatch(r'\|(?:\s*:?-{3,}:?\s*\|)+', line.strip()):
+        marker = re.match(r'\s*(`{3,}|~{3,})', line)
+        if marker:
+            opener = marker.group(1)
+            if fence is None:
+                fence = opener[0]
+            elif opener[0] == fence:
+                fence = None
+            continue
+        # Only column-0 tables are validated. An indented table is skipped rather
+        # than failed, so a table nested in a list item cannot block a release.
+        if fence or not re.fullmatch(r'\|(?:\s*:?-{3,}:?\s*\|)+', line):
             continue
         header = lines[index - 1] if index else ''
         assert header.startswith('|'), ('separator row without a header row', doc.name, index + 1)
@@ -58,16 +66,21 @@ def _check_tables(doc, text):
 
 
 def _anchors(text):
-    """Heading anchors the GitHub way: lowercase, keep alphanumeric/space/hyphen, spaces to hyphens."""
-    return {re.sub(r'[^a-z0-9 -]', '', heading.lower()).replace(' ', '-')
-            for heading in re.findall(r'^#+ +(.+?)\s*$', text, re.M)}
+    """Heading anchors the GitHub way: lowercase, keep alphanumeric/space/hyphen/underscore.
+
+    Fenced blocks are removed first so a `#` comment inside an example is not
+    harvested as a heading, which would let a broken fragment link pass.
+    """
+    bare = re.sub(r'^(`{3,}|~{3,})[^\n]*\n.*?^\1[^\n]*$', '', text, flags=re.M | re.S)
+    return {re.sub(r'[^a-z0-9 _-]', '', heading.lower()).replace(' ', '-')
+            for heading in re.findall(r'^#+ +(.+?)\s*$', bare, re.M)}
 
 
 def _description(body):
     """The `description:` folded scalar from a SKILL.md YAML frontmatter block."""
     front = re.match(r'---\n(.*?)\n---\n', body, re.S)
     assert front, 'SKILL.md has no YAML frontmatter'
-    block = re.search(r'^description: >-\n((?:[ \t]+\S.*\n)+)', front.group(1), re.M)
+    block = re.search(r'^description: >-\n((?:[ \t]+\S.*(?:\n|\Z))+)', front.group(1), re.M)
     assert block, 'SKILL.md frontmatter has no folded description block'
     return ' '.join(block.group(1).split())
 
@@ -129,16 +142,28 @@ def validate():
         assert headings, 'CHANGELOG.md has no version heading'
         assert headings[0] == om['version'], ('changelog version', headings[0], om['version'])
         assert 'TLP:GREEN' in changelog and '(C) Erez Kalman' in changelog
-        for bullet in re.findall(r'^- [^\n]*(?:\n[ \t]+\S[^\n]*)*', changelog, re.M):
-            claimed, _, rest = ' '.join(bullet[2:].split()).partition(':')
-            if claimed not in CHANGELOG_FILES:
-                continue
-            document = core / CHANGELOG_FILES[claimed]
-            for section in re.findall(r'\*\*([^*]+)\*\*', rest):
-                assert document.is_file(), ('changelog names a missing file', claimed, str(document))
-                assert re.search(r'^#+ .*' + re.escape(section), document.read_text(encoding='utf-8'),
-                                 re.M | re.I), ('changelog claims a section the file lacks',
-                                                CHANGELOG_FILES[claimed], section)
+        # Only the entry for the version being released is checked. Older entries
+        # describe the tree as it was, so a later rename must not fail them.
+        current = re.search(r'^## ' + re.escape(om['version']) + r'\b.*?(?=^## |\Z)',
+                            changelog, re.M | re.S)
+        assert current, ('changelog has no entry for this version', om['version'])
+        for bullet in re.findall(r'^- [^\n]*(?:\n[ \t]+\S[^\n]*)*', current.group(0), re.M):
+            text = ' '.join(bullet[2:].split())
+            # A bullet names its file either as a "Human name:" prefix or as a
+            # backticked path anywhere in the bullet.
+            named = [CHANGELOG_FILES[key] for key in (text.partition(':')[0],) if key in CHANGELOG_FILES]
+            named += [path for path in re.findall(r'`(references/[^`]+\.md|SKILL\.md)`', text)]
+            # Only a bold span explicitly called a section is a claim about a
+            # heading; bare bold is ordinary emphasis and is not asserted on.
+            claims = re.findall(r'\*\*([^*]+)\*\* section|section \*\*([^*]+)\*\*', text)
+            sections = [a or b for a, b in claims]
+            for relative in dict.fromkeys(named):
+                document = core / relative
+                assert document.is_file(), ('changelog names a missing file', relative)
+                content = document.read_text(encoding='utf-8')
+                for section in sections:
+                    assert re.search(r'^#+ .*' + re.escape(section), content, re.M | re.I), (
+                        'changelog claims a section the file lacks', relative, section)
     print('PASS: catalogs, package names/versions, changelog sync, markings, '
           'script documentation, relative references, link fragments, table '
           'shape, changelog sections, description length, and Python syntax')

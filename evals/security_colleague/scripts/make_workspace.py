@@ -25,6 +25,7 @@ Usage:
 """
 import argparse
 import json
+import shutil
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
@@ -45,7 +46,10 @@ def main() -> None:
     args = parser.parse_args()
 
     data = json.loads(args.evals.read_text(encoding="utf-8"))
-    wanted = {int(x) for x in args.evals_only.split(",") if x.strip()}
+    try:
+        wanted = {int(x) for x in args.evals_only.split(",") if x.strip()}
+    except ValueError:
+        parser.error(f"--evals-only takes numeric eval ids, not {args.evals_only!r}")
     configs = [c.strip() for c in args.configs.split(",") if c.strip()]
     iteration_dir = args.out / f"iteration-{args.iteration}"
 
@@ -54,6 +58,12 @@ def main() -> None:
         if wanted and item["id"] not in wanted:
             continue
         eval_dir = iteration_dir / f"eval-{item['id']}-{item['name']}"
+        # Remove any previous run tree for this eval. A smaller --runs than a
+        # prior invocation would otherwise leave populated run-N directories
+        # behind, and the aggregation step would blend those stale results into
+        # the new with/without delta.
+        if eval_dir.exists():
+            shutil.rmtree(eval_dir)
         eval_dir.mkdir(parents=True, exist_ok=True)
         (eval_dir / "eval_metadata.json").write_text(json.dumps({
             "eval_id": item["id"],
@@ -67,6 +77,10 @@ def main() -> None:
                 (eval_dir / config / f"run-{run}" / "outputs").mkdir(parents=True, exist_ok=True)
         created.append(eval_dir)
 
+    known = {item["id"] for item in data["evals"]}
+    missing = sorted(wanted - known)
+    if missing:
+        parser.error(f"no eval with id {missing} in {args.evals}; known ids are {sorted(known)}")
     if not created:
         raise SystemExit(f"No evals matched --evals-only={args.evals_only!r}")
     print(f"Workspace: {iteration_dir}")
