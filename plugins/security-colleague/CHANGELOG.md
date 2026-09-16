@@ -4,7 +4,10 @@
 
 ## 0.4.0 — Make the rules reach a run, then measure them, 2026-09-16
 
-Verification pending; this line is replaced with the CI run before release.
+Verified: repository validation and all 60 regression tests pass on Python 3.12
+on Linux, macOS and Windows ([CI run](https://github.com/kaerez/skills/actions/runs/35053003317)).
+Unverified: any client installation, update or session reload, and live
+enforcement behaviour.
 
 A full-package audit after 0.3.0 found that release did not deliver its headline
 fix in the delivery mode where the failure was observed. `SKILL.md` is always
@@ -42,6 +45,14 @@ shape that motivated 0.3.0 — never produced one.
   frontmatter description bound. Each was shown failing against a deliberately
   broken copy before it counted. The table guard reproduces the `eff80d4`
   defect, which the validator previously passed and a human caught.
+- **A security review of `scripts/rule_coverage.py`**, owed from 0.3.0 and not
+  run then. Matching is correct across trailing dots, case, lookalike
+  registrable names and homoglyphs, which punycode-normalize and so surface as
+  uncovered rather than silently matching an ASCII rule. Two findings fixed: a
+  malformed evidence line was echoed in the error, and evidence derived from a
+  captured service may carry a token, so the line is no longer reproduced; and
+  a bare label that is not a host is accepted and reaches the report, now named
+  in the tool's own limitations.
 - **An eval harness** at `evals/security_colleague/`, outside the shipped skill
   directory so fixtures do not reach every install. Five evals derived from
   observed failures, with a baseline arm, because an assertion that passes with

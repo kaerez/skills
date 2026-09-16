@@ -260,5 +260,17 @@ class RuleCoverageTests(unittest.TestCase):
             self.assertTrue(sentence.endswith('.'), sentence)
 
 
+    def test_a_malformed_evidence_line_is_not_echoed_in_the_error(self):
+        """Regression: evidence comes from a captured service and may carry a token."""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'evidence.txt'
+            path.write_text('host.example.invalid\nnot a host at all!!!\n', encoding='utf-8')
+            with self.assertRaises(ValueError) as caught:
+                coverage.load_evidence(path, 1024 * 1024)
+            message = str(caught.exception)
+            self.assertIn('line 2', message)
+            self.assertNotIn('not a host at all', message)
+
+
 if __name__ == '__main__':
     unittest.main()
