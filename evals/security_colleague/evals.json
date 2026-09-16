@@ -1,0 +1,75 @@
+{
+  "skill_name": "security-colleague",
+  "evals": [
+    {
+      "id": 1,
+      "name": "brief-mode-rule-shape",
+      "prompt": "no report please, just answer here in chat - I have a change window at 16:00 and I need something I can paste into the ticket. We are letting staff view and read everything on the vendor site at portal.vendorco.invalid, but they must not create, upload or edit anything there. Enforcement is our secure web gateway; it matches on domain only (exact host, or *.suffix) and TLS inspection is already on for this category. From one HAR of a viewer session the hosts are: portal.vendorco.invalid, static-cdn.vendorco.invalid, api-edge.vendorco.invalid, ingest-upload.vendorco.invalid, sso.vendorco.invalid. What do we push?",
+      "expected_output": "A brief chat answer that leads with a rule-shape verdict (blocklist, allowlist, or default-deny with validated allows above it), the single fact that decides that shape, and what that shape cannot do - all of it before any hostname appears - followed by the host decisions. No report, artifact or file, because none was requested.",
+      "files": [],
+      "expectations": [
+        "The reply commits to one rule shape - blocklist, allowlist, or default-deny with allows evaluated above it - as a verdict, rather than listing the shapes as options for the reader to choose between.",
+        "The rule-shape verdict appears before the first hostname in the reply; the host decisions follow it, not the other way round.",
+        "The reply gives the one fact that decides the shape for this case (for example whether the prohibited surface is small, fully enumerable and on dedicated hosts, or whether the engine can default-deny scoped to this service).",
+        "The reply states what the chosen shape cannot do: fail-open for a blocklist (every host not enumerated stays reachable), breakage until the dependency set is complete for an allowlist, or which rule is evaluated first for a default-deny with allows above it.",
+        "The answer stays in chat at brief depth: no detailed report, decision memo, canvas, artifact or saved file is produced, and the rule-shape verdict is present anyway rather than being deferred to a report that was never requested."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "followup-missed-host",
+      "prompt": "following on from the set you gave me: you had us allow portal.vendorco.invalid, static-cdn.vendorco.invalid and sso.vendorco.invalid, block ingest-upload.vendorco.invalid, and leave the rest of vendorco.invalid to the default web category. Your method was to resolve the hosts that appeared in the viewer HAR plus the candidate names we listed. Gateway logs for yesterday show 41,000 allowed requests to media-edge-eu2.vendorco.invalid from the test group. That host is nowhere in your set. What do I tell the change board?",
+      "expected_output": "The run treats the missed host as a defect in the enumeration method rather than a single-host lookup: it names what the original method structurally could not reach, widens the method concretely, restates the coverage bound the widened method now supports, and reissues the affected deliverable - not an apology plus one corrected row.",
+      "files": [],
+      "expectations": [
+        "The reply identifies the missed host as evidence that the enumeration METHOD was bounded - naming what that method structurally could not reach (for example: only hosts contacted during the one captured workflow, only the spellings guessed, no regional or cluster variants enumerated) - rather than attributing it to a one-off slip such as a typo, a wrong spelling or an NXDOMAIN.",
+        "The reply widens the enumeration method concretely and says how: naming the additional surfaces or passes to run (for example regional and cluster variant enumeration over the candidate names, re-reading the capture for the whole label family, gateway or DNS logs the organization already holds), not merely promising to be more careful.",
+        "The reply restates the coverage bound that the widened method now supports, including what it still cannot reach.",
+        "The reply reissues the affected deliverable - the corrected host decisions or rule list as a whole - rather than answering only for media-edge-eu2.vendorco.invalid and leaving the rest of the earlier set standing unexamined.",
+        "The reply names the fail-open property of the earlier shape as the reason the miss was silent: traffic to a host nobody enumerated was permitted by default and produced no signal until the logs were read."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "completeness-bound-volunteered",
+      "prompt": "host inventory from the HAR I captured this morning, two labels, public-view and viewer-registration: app.learnportal.invalid, cdn1.learnportal.invalid, cdn2.learnportal.invalid, id.learnportal.invalid, telemetry.learnportal.invalid, files.learnportal.invalid. Goal is that people can watch and read everything, and cannot create, upload or edit. The gateway matches on domain. Give me the host decisions.",
+      "expected_output": "The first host list arrives with its own method and bound stated without being asked: what was actually searched to produce the set, what that method would not have found, and whether anything outside the set is permitted by default (named as fail-open where it is).",
+      "files": [],
+      "expectations": [
+        "In the same reply as the host decisions, and without the user having asked about completeness, the run states the method that produced the set - what was actually searched (which capture and which labels, which resolutions, which logs) rather than an unattributed list.",
+        "The reply states what that method would not have found, tied to this evidence specifically (for example hosts only contacted by workflows absent from these two labels, regional or cluster variants never resolved, hosts reached only by a native client), not a generic 'this may not be exhaustive' caveat.",
+        "The reply says whether anything outside the delivered set is permitted by default under the recommended rules, and uses the word fail-open where that is the case.",
+        "The bound is volunteered in the first deliverable: it is not deferred to a closing disclaimer that only qualifies confidence, and does not wait for the user to challenge the list.",
+        "Hosts whose role is not settled by this evidence (for example telemetry.learnportal.invalid or files.learnportal.invalid, where read and write may share a host) are carried as Unresolved or Conditional with the observation that would settle them, rather than being placed in the unconditional allow set."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "capture-requested-on-unresolved",
+      "prompt": "one host left before I can sign this off: svc-bridge.meetingco.invalid. The only place it appears is as a base URL inside the player bundle, with two paths built off it, /v2/render and /v2/ingest. Nothing in my capture ever calls it and DNS just resolves it to the same provider as the CDN. We have no budget to go collect more evidence this week, so just tell me allow or block.",
+      "expected_output": "A capture is requested even though the user asked for a verdict without more evidence, and the request is scoped to a named workflow and a named surface. The host is carried as Unresolved or Conditional rather than entering the unconditional allow set, a provisional usable decision is still given, and the capture is to be sanitized before it is sent.",
+      "files": [],
+      "expectations": [
+        "The reply asks for a capture rather than settling the host by inference alone, and does so despite the user asking for a straight allow/block without further evidence.",
+        "The capture request is scoped: it names the specific workflow to exercise (for example opening a shared item as a viewer, or the action that would drive /v2/ingest) AND the surface to capture it on (for example the managed browser profile, a named client or OS, the gateway or DNS log extract), rather than asking generically for 'a HAR' or 'more logs'.",
+        "The reply states that the capture must be sanitized before it is sent, and names the bundled sanitizer (scripts/har_sanitize.py) rather than leaving handling to the user's judgement.",
+        "svc-bridge.meetingco.invalid is carried as Unresolved or Conditional and kept out of the unconditional allow set; the reply distinguishes the endpoint being reachable or present in shipped code from the operation having been observed to succeed.",
+        "A usable provisional decision is still given for the rest of the set so the sign-off is not blocked, with the consequence of each provisional choice stated - rather than either refusing to answer until evidence arrives or quietly guessing the role of the host."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "no-maturity-label",
+      "prompt": "I need something to put in front of the change board on Thursday. It does not need to be perfect - call it a first cut or phase 1 if that helps, we can tighten it later. Service is docs.filehub.invalid; from the capture we have docs.filehub.invalid, render.filehub.invalid, static.filehub.invalid, sync-api.filehub.invalid and login.filehub.invalid. Read and view allowed, create, upload and edit blocked, gateway matches on domain. Write it up.",
+      "expected_output": "The deliverable declines the offered maturity label and answers with coverage instead: what the set covers, what it does not, fail-open named where anything outside the set is permitted by default, and any residual uncertainty carried as Provisional or Unresolved attached to a named gap and to the next observation that closes it.",
+      "files": [],
+      "expectations": [
+        "No set, table, rule list or recommendation in the deliverable is labelled pilot, draft, first cut, first pass, phase 1, initial, interim or proof of concept as its qualifier - the user's own 'first cut' framing is not adopted as the label on the output.",
+        "Where the user's 'does not need to be perfect' framing is addressed, it is answered with a statement of coverage - what this set covers and what it does not - rather than with a maturity or phase label standing in for that statement.",
+        "The deliverable states whether anything outside the delivered set is permitted by default and uses the word fail-open where that is the case.",
+        "Any residual uncertainty is carried as Provisional or Unresolved attached BOTH to a named gap and to the next observation that would close it, rather than as an unattached hedge or a promise to 'tighten it later'.",
+        "The write-up is a decision the change board can act on now - each host carries an action and the consequence of that action - rather than a staged rollout plan whose first stage substitutes for the decision."
+      ]
+    }
+  ]
+}

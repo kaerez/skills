@@ -6,7 +6,7 @@ Individually installable skills. Publication source: https://github.com/kaerez/s
 
 | Package | Version | Core skill |
 | --- | --- | --- |
-| Security Colleague | 0.3.0 | [Instructions](plugins/security-colleague/skills/security-colleague/SKILL.md) |
+| Security Colleague | 0.4.0 | [Instructions](plugins/security-colleague/skills/security-colleague/SKILL.md) |
 
 Security Colleague reviews consumption-only service access, shared dependencies, enforcement options, HAR/web evidence, sanitization, regex, browser versions, and scoped security findings. It asks about available controls, client scope, and report depth. Its bundled Python tools provide a HAR host inventory, a route-level HAR sanitizer, a lossy HAR minimizer, a DNS-only host probe, and a rule-coverage check that reports which evidence hosts a proposed allow/block list leaves uncovered. Deeper parsing and multilingual entity detection require suitable tools and verification; they are not bundled universal sanitizers, the host probe resolves names rather than testing reachability, and the coverage check proves nothing about hosts missing from the evidence it is given.
 

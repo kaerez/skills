@@ -2,6 +2,52 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
+## 0.4.0 — Make the rules reach a run, then measure them, 2026-09-16
+
+Verification pending; this line is replaced with the CI run before release.
+
+A full-package audit after 0.3.0 found that release did not deliver its headline
+fix in the delivery mode where the failure was observed. `SKILL.md` is always
+loaded; `report-format.md` is consulted only for a requested detailed report,
+and a brief engagement is told to return a decision without it. The rule-shape
+verdict lived only in `report-format.md`, so a brief consumption review — the
+shape that motivated 0.3.0 — never produced one.
+
+- **Reach.** State the rule-shape verdict at every depth, brief included, with
+  the precedence a default-deny-plus-allows shape needs to mean anything: the
+  same two rules in the opposite order is a different policy. State in
+  `SKILL.md` that a fired capture trigger interrupts the ladder, rather than
+  leaving only the unqualified "exhaust read-only retrieval first". Restore the
+  Provisional and Unresolved carve-out dropped on the way into `SKILL.md`, where
+  a blanket ban contradicted six passages requiring the word.
+- **`scripts/rule_coverage.py` is now invoked by the procedures that decide a
+  rule set**, with a command block. It shipped in 0.3.0 referenced only by the
+  tool inventory, so a run would hand-assert fail-openness and never call the
+  checker written to compute it.
+- **Three disciplines for every task**, in `SKILL.md` above the procedure table:
+  publish the bound with the set, state the verdict before the evidence, and let
+  an unresolved item name the evidence that would resolve it. These were written
+  for the consumption-review track only; the other task types now inherit them.
+  `references/security-investigation.md` gains the bound requirement it lacked.
+- **One evidence vocabulary.** `SKILL.md`'s observed / documented / inferred /
+  unknown / tested is canonical. A reference may refine a label but not
+  introduce a competing set; `report-format.md`'s stray "Confirmed" is gone.
+- **`references/regex.md`** learns about the defect that caused 0.2.0:
+  percent-decode before applying a pattern, and construct the verifying pattern
+  independently of the redacting one. It was documented in three other files and
+  absent from the one a regex author opens.
+- **Deterministic prose guards** in `tools/validate_repository.py`: markdown
+  table shape, `#anchor` fragment resolution, an assertion that every section a
+  changelog bullet names still exists in the file it names, and a 1024-character
+  frontmatter description bound. Each was shown failing against a deliberately
+  broken copy before it counted. The table guard reproduces the `eff80d4`
+  defect, which the validator previously passed and a human caught.
+- **An eval harness** at `evals/security_colleague/`, outside the shipped skill
+  directory so fixtures do not reach every install. Five evals derived from
+  observed failures, with a baseline arm, because an assertion that passes with
+  or without the skill measures nothing. The runners call a model, so they are
+  deliberately not wired into CI: run on demand and commit the dated record.
+
 ## 0.3.0 — Enumeration completeness, capture triggers, rule-shape verdict, 2026-09-15
 
 Verified: repository validation and all 59 regression tests pass on Python 3.12

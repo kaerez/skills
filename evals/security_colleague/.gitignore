@@ -1,0 +1,10 @@
+# Harness run artifacts. These are model output: non-deterministic, token-costed,
+# regenerated on demand. Commit the curated dated copy under records/ instead.
+workspace/
+loop-results/
+__pycache__/
+
+# run_eval.py / run_loop.py write a temporary slash-command file into the nearest
+# .claude/commands/ above the working directory; anchoring it here keeps that out
+# of the repository root.
+.claude/

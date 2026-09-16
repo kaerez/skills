@@ -2,6 +2,8 @@
 
 Use this reference for material security conclusions.
 
+Every material claim carries one of the five canonical labels: **observed**, **documented**, **inferred**, **unknown**, **tested**. The Fact / Does not establish table below is the calibration layer beneath those labels, fixing what a given fact can support; it is not a competing scheme.
+
 Record an evidence identifier, source type/location, observation/retrieval date, relevant client/OS/tool/service versions, tenant/region, identity role, workflow state, and confidence. Use safe aliases in reports; keep raw identifiers and secret-bearing URLs out of exported evidence.
 
 Preserve originals in the authorized environment and work on derivatives. Record integrity hashes locally when needed, treating hashes of private inputs as sensitive metadata rather than publishing them automatically. Record transformations, parser versions, exclusions and errors. Keep secrets and redaction mappings out of logs, filenames, tracebacks and reports.

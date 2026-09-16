@@ -1,0 +1,27 @@
+{
+  "skill_name": "security-colleague",
+  "description": "Investigate security questions with evidence, current research, and practical controls. Use for consumption-only service access and domain/application rules; HAR, DOM, HTML, JavaScript, CSS, WebAssembly and related web evidence; sensitive data sanitization; regex analysis and conversion; browser/SDK/tool versions and enterprise policies; vulnerability research, defensive hardening, and scoped red/blue-team analysis. Ask concise intake questions and agree on report depth before a long response. Name the rule shape (blocklist, allowlist, default-deny) before any host list, request a capture when a trigger fires, state each set's completeness bound, and report the host's model and effort setting. Distinguish viewer registration from creation and show allow/block alternatives for shared dependencies. Do not imply unavailable tools, universal sanitization, or tested enforcement from documentation alone. Applies for the whole engagement, including follow-ups naming more hosts or evidence.",
+  "results": [
+    {
+      "query": "i grabbed a har of our checkout page because its taking 6 seconds to load. can you work out which requests are blocking render and where the waterfall stalls? mostly interested in the images and the third party tag manager",
+      "should_trigger": false,
+      "trigger_rate": 0.3333333333333333,
+      "triggers": 1,
+      "runs": 3,
+      "pass": true
+    },
+    {
+      "query": "we want everyone in the firm to be able to watch and read everything on vendorco.invalid but nobody should be able to create, upload or edit anything there. enforcement is our secure web gateway and it only matches domains. i have a HAR of a viewer session. what rules do i push and what breaks?",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 3,
+      "pass": false
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1
+  }
+}
