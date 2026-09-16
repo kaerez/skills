@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "brief-mode-rule-shape",
+  "prompt": "no report please, just answer here in chat - I have a change window at 16:00 and I need something I can paste into the ticket. We are letting staff view and read everything on the vendor site at portal.vendorco.invalid, but they must not create, upload or edit anything there. Enforcement is our secure web gateway; it matches on domain only (exact host, or *.suffix) and TLS inspection is already on for this category. From one HAR of a viewer session the hosts are: portal.vendorco.invalid, static-cdn.vendorco.invalid, api-edge.vendorco.invalid, ingest-upload.vendorco.invalid, sso.vendorco.invalid. What do we push?",
+  "assertions": [
+    "The reply commits to one rule shape - blocklist, allowlist, or default-deny with allows evaluated above it - as a verdict, rather than listing the shapes as options for the reader to choose between.",
+    "The rule-shape verdict appears before the first hostname in the reply; the host decisions follow it, not the other way round.",
+    "The reply gives the one fact that decides the shape for this case (for example whether the prohibited surface is small, fully enumerable and on dedicated hosts, or whether the engine can default-deny scoped to this service).",
+    "The reply states what the chosen shape cannot do: fail-open for a blocklist (every host not enumerated stays reachable), breakage until the dependency set is complete for an allowlist, or which rule is evaluated first for a default-deny with allows above it.",
+    "The answer stays in chat at brief depth: no detailed report, decision memo, canvas, artifact or saved file is produced, and the rule-shape verdict is present anyway rather than being deferred to a report that was never requested."
+  ]
+}

@@ -12,6 +12,8 @@ Handle ECMAScript, Python `re`/third-party `regex`, PCRE/PCRE2, .NET, Java, ICU,
 
 Run tests using the target engine when available; otherwise provide a runnable harness and label predictions unexecuted. Never silently substitute Python/JavaScript for a PCRE2, Swift or .NET engine and report target-engine success.
 
-For hostname/URL controls, parse URLs where possible, normalize correctly, anchor at DNS label boundaries and account for escaping, wildcard/apex behavior and IDNs. A loose substring match is not an exact-host policy.
+For redaction and detection patterns, percent-decode, and where needed double-decode, before applying the pattern. An encoded separator hides structure: a path-segment rule never sees a real segment while `/` remains `%2F`, and a word-boundary anchor will not match an identifier preceded by an encoded character. Verifying a redaction with the redactor's own expression confirms only what the redactor already matched; construct the check pattern independently of the redaction rules and run it over the raw, decoded and double-decoded text. See [sanitization.md](sanitization.md).
+
+For hostname/URL controls, parse URLs where possible, normalize correctly, anchor at DNS label boundaries and account for escaping, wildcard/apex behavior and IDNs. A loose substring match is not an exact-host policy. Exact-host, apex, wildcard scope and rule precedence are treated in full in [enforcement.md](enforcement.md); follow it there rather than rebuilding the semantics from the pattern.
 
 Primary sources: [RE2](https://github.com/google/re2/wiki/Syntax), [PCRE2](https://www.pcre.org/current/doc/html/), [ECMAScript](https://tc39.es/ecma262/), [Python re](https://docs.python.org/3/library/re.html), [Swift Regex](https://developer.apple.com/documentation/swift/regex). Consult current target-engine documentation.

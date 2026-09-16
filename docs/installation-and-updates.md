@@ -2,7 +2,7 @@
 
 **TLP:GREEN · (C) Erez Kalman**
 
-Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Current package version: `0.3.0`. Initial published version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
+Prepared 2026-09-15. Source: `https://github.com/kaerez/skills`. Current package version: `0.4.0`. Initial published version: `0.1.0`. Both catalogs use marketplace name `ksec`; plugin name is `security-colleague`. The OpenAI catalog display name is `KSEC`. The marketplace was renamed from `personal` to `ksec`; existing client registrations and installed plugin identifiers must be checked separately. Changing these catalog files does not establish that an existing installation has migrated to the new name.
 
 ## Status
 
@@ -42,6 +42,19 @@ Run validation, review the diff, and record the actual GitHub commit after uploa
 Repository refresh, installed-package update, and active-session reload are separate events. Claude Code can require `/reload-plugins` or a new session after a background update. Follow the actual Codex client's documented reload behavior; it remains unverified here. Keep credentials in platform credential stores, not skill files. Do not describe updates as working until each destination has fetched, installed, and loaded a changed version.
 
 ## Validation record
+
+`0.4.0`, 2026-09-16. GitHub Actions ran `tools/validate_repository.py` and the
+full regression suite on Python 3.12 across Linux, macOS and Windows: validation
+passed and all 60 tests passed on every job. [Verified run for 0.4.0](https://github.com/kaerez/skills/actions/runs/35053423387).
+The validator now also checks markdown table shape, link fragments, changelog
+section claims and the frontmatter description bound; each guard was shown
+failing against a deliberately broken copy before it was kept.
+
+A skill eval harness lives at `evals/security_colleague/`. Its first recorded
+run compares the skill against a no-skill baseline on a brief-mode consumption
+review: 3/3 with the skill, 0/3 without. These runners call a model, so they are
+non-deterministic, cost tokens, and are deliberately not wired into CI; run them
+on demand and commit the dated record under `evals/security_colleague/records/`.
 
 `0.3.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
 full regression suite on Python 3.12 across Linux, macOS and Windows: validation

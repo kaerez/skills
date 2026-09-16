@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "The reply commits to one rule shape - blocklist, allowlist, or default-deny with allows evaluated above it - as a verdict, rather than listing the shapes as options for the reader to choose between.",
+      "passed": false,
+      "evidence": "The response never names or invokes any of the three shapes. It gives a per-host Allow/Block table ('portal.vendorco.invalid | Allow', 'ingest-upload.vendorco.invalid | Block', etc.) and a note about exact-host vs wildcard matching, but no sentence states 'this is a blocklist' / 'this is an allowlist' / 'default-deny with these allows above it', nor any equivalent framing of the shape decision. It does not list the shapes as options either — it simply omits the shape question entirely, so there is no verdict to find."
+    },
+    {
+      "text": "The rule-shape verdict appears before the first hostname in the reply; the host decisions follow it, not the other way round.",
+      "passed": false,
+      "evidence": "There is no rule-shape verdict anywhere in the reply (see previous expectation), so none can appear before the first hostname. The text preceding the first hostname is only the heading 'Rules to push (exact-host entries — do not use a `*.vendorco.invalid` wildcard):', which addresses match-granularity (exact host vs suffix wildcard), not the blocklist/allowlist/default-deny shape question."
+    },
+    {
+      "text": "The reply gives the one fact that decides the shape for this case (for example whether the prohibited surface is small, fully enumerable and on dedicated hosts, or whether the engine can default-deny scoped to this service).",
+      "passed": false,
+      "evidence": "No such deciding fact is discussed. The reply's analytical content is about (a) wildcard vs exact-host matching and (b) the gateway's inability to distinguish read vs write on a shared host like api-edge.vendorco.invalid. Nothing addresses whether the prohibited surface is small/enumerable/on dedicated hosts, or whether the gateway engine can scope a default-deny to this vendor service."
+    },
+    {
+      "text": "The reply states what the chosen shape cannot do: fail-open for a blocklist (every host not enumerated stays reachable), breakage until the dependency set is complete for an allowlist, or which rule is evaluated first for a default-deny with allows above it.",
+      "passed": false,
+      "evidence": "Since no shape is ever named, no shape-specific limitation of this kind is stated. The reply's caveat is a different one: 'this gateway cannot separate that traffic — it matches domain only, not method or path... Blocking ingest-upload would stop obvious file uploads but not necessarily in-app edits/creates that ride on api-edge.' That is a real limitation, but it is about matching granularity (domain-only vs path/method), not about fail-open blocklist gaps, allowlist completeness/breakage, or default-deny rule-ordering."
+    },
+    {
+      "text": "The answer stays in chat at brief depth: no detailed report, decision memo, canvas, artifact or saved file is produced, and the rule-shape verdict is present anyway rather than being deferred to a report that was never requested.",
+      "passed": false,
+      "evidence": "The first half holds: the reply is a compact in-chat table plus two short paragraphs, with no artifact, canvas, memo, or file created. But the assertion is conjunctive and requires the rule-shape verdict to also be present — it is not (per the first four expectations), so the compound assertion fails."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 5,
+    "total": 5,
+    "pass_rate": 0.0
+  },
+  "timing": {
+    "total_duration_seconds": 33.3
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "The five assertions are well-targeted and discriminating: they specifically probe whether the model reasons about rule shape (blocklist vs. allowlist vs. default-deny-with-allows) as a named, ordered, trade-off-aware decision, rather than just producing a plausible-looking host table. This response is a good example of that gap — it is operationally sound (correct exact-host-vs-wildcard warning, a genuinely sharp catch about api-edge read/write ambiguity) but never engages with the rule-shape framing at all, so it fails all five cleanly rather than by a technicality. No changes suggested to the assertions."
+  }
+}

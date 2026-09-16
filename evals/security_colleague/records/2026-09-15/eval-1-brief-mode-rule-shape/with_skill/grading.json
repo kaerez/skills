@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "The reply commits to one rule shape - blocklist, allowlist, or default-deny with allows evaluated above it - as a verdict, rather than listing the shapes as options for the reader to choose between.",
+      "passed": true,
+      "evidence": "Line 3: '**Verdict:** Push an **allowlist of the 4 hosts staff actually need**, plus one **explicit block** for the upload-looking host, evaluated above whatever your current default action is for this category.' Line 5 makes the shape explicit and rules out the alternative: '**Rule shape:** Allowlist (narrow, evidenced) with one hard block above it. Not a blocklist — you have no visibility into the vendor's full host set from one HAR...'. Only one shape is committed to; the other shapes are mentioned only to be rejected, not offered as a menu."
+    },
+    {
+      "text": "The rule-shape verdict appears before the first hostname in the reply; the host decisions follow it, not the other way round.",
+      "passed": true,
+      "evidence": "The Verdict paragraph (line 3) and the explicit 'Rule shape: Allowlist... with one hard block above it' line (line 5) both precede the per-host decision table (lines 7-13, 'portal.vendorco.invalid | Allow ...' etc.). The only hostname token appearing earlier than the table is `api-edge` inside the Verdict paragraph itself, used as an illustrative aside ('that's why `api-edge` is the risk item, not a footnote') rather than as a host-by-host decision — the actual per-host allow/block calls all come after the rule-shape statement."
+    },
+    {
+      "text": "The reply gives the one fact that decides the shape for this case (for example whether the prohibited surface is small, fully enumerable and on dedicated hosts, or whether the engine can default-deny scoped to this service).",
+      "passed": true,
+      "evidence": "Rule-shape section states the deciding fact directly: 'Not a blocklist — you have no visibility into the vendor's full host set from one HAR, and a blocklist has to be complete to work; a missed host here just leaks through silently.' This is exactly the enumerability fact the assertion asks for, and it is repeated in the 'Completeness bound' paragraph: 'this host set comes from one HAR of one viewer session — it is not a full enumeration...'"
+    },
+    {
+      "text": "The reply states what the chosen shape cannot do: fail-open for a blocklist (every host not enumerated stays reachable), breakage until the dependency set is complete for an allowlist, or which rule is evaluated first for a default-deny with allows above it.",
+      "passed": true,
+      "evidence": "For the allowlist side: 'An allowlist fails loudly (staff report a blocked page) instead' (implicitly the breakage/friction cost of an allowlist). For the 'allows evaluated above a block/default' aspect of the chosen hybrid shape: 'Verify your specific gateway's allow-vs-block precedence before pushing — if a block-then-allow evaluation order differs from what you assume, `ingest-upload` could end up allowed instead of blocked.' This directly names evaluation-order as the failure mode, matching the default-deny-with-allows-above-it caveat in the assertion."
+    },
+    {
+      "text": "The answer stays in chat at brief depth: no detailed report, decision memo, canvas, artifact or saved file is produced, and the rule-shape verdict is present anyway rather than being deferred to a report that was never requested.",
+      "passed": true,
+      "evidence": "outputs/ contains only response.md; raw_result.json shows a single-turn chat result (num_turns: 4, no tool_use entries, no Artifact/Write calls) with the same text as response.md — no file, report, memo, or artifact was created. The rule-shape verdict appears in the second line of the reply, not deferred to any separate document."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_duration_seconds": 74.0
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The answer stays in chat at brief depth: no detailed report, decision memo, canvas, artifact or saved file is produced...",
+        "reason": "This assertion only checks that no separate file/artifact was produced, which the reply satisfies, but the in-chat text itself is fairly report-like: it has five bolded section headers, a five-row markdown table, and a fenced code block — closer to a decision memo pasted inline than a brief chat answer. A user who explicitly asked for 'something I can paste into the ticket' before a 16:00 change window got a well-organized but lengthy artifact-shaped wall of text. Consider adding an assertion that bounds overall length/structure (e.g. a maximum number of section headers, or 'no more than one table') so brevity is graded on the actual text, not just on the absence of a saved file."
+      }
+    ],
+    "overall": "All 5 expectations pass on clear textual evidence. The one gap: the eval's brevity assertion is satisfied by a technicality (no file was saved) while the chat reply is itself long and heavily formatted, which may not be what 'brief mode' is meant to reward."
+  }
+}

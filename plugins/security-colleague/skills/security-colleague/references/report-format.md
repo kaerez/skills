@@ -32,7 +32,7 @@ Do not label a set pilot, draft, first pass, phase 1 or proof of concept in plac
 | Action or workflow | Desired outcome | Authentication/registration treatment | Evidence or assumption |
 | --- | --- | --- | --- |
 | Requested viewing or playback | Allow | State public/viewer/attendee requirement | Link or observed result |
-| Viewer registration/session renewal | Allow if needed for consumption | State what identity/capabilities it grants | Confirmed, inferred, or unknown |
+| Viewer registration/session renewal | Allow if needed for consumption | State what identity/capabilities it grants | Observed, documented, inferred, unknown, or tested |
 | Creation/editing/uploading and other prohibited actions | Block | Include existing sessions and anonymous routes where relevant | Evidence or untested path |
 
 Include downloads, live participation, comments, or similar actions only when they matter. Mark ambiguous activities as assumptions or options rather than silently expanding permission.

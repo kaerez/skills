@@ -154,7 +154,9 @@ def hosts_from_lines(text):
         try:
             host, _ = normalize_host(entry)
         except ValueError as error:
-            raise ValueError(f"Evidence line {number} is not a bare host: {error}") from None
+            raise ValueError(
+                f"Evidence line {number} is not a bare host; the line is not echoed because "
+                "evidence may carry tokens") from None
         found.append(host)
     if not found:
         raise ValueError("Evidence holds neither inventory JSON nor any host line")
@@ -241,6 +243,9 @@ def build_report(evidence_hosts, rule_specs, default_action="allow"):
             "Matching semantics are modelled generically as exact-name and whole-label domain "
             "membership, so the selected engine's own parsing, wildcards, precedence and case "
             "folding must be verified against its documentation before these results are relied on.",
+            "An evidence entry that is a valid DNS label but not a host - a bare token, an "
+            "internal codename - is accepted and appears in this report, so review the evidence "
+            "before sharing the output.",
             "No DNS resolution and no network input or output are performed, so a rule value that "
             "resolves to nothing is indistinguishable here from one that resolves correctly.",
             "Effective decisions describe the modelled rule list alone and do not prove that any "
