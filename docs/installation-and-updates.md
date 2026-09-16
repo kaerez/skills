@@ -43,6 +43,19 @@ Repository refresh, installed-package update, and active-session reload are sepa
 
 ## Validation record
 
+`0.4.0`, 2026-09-16. GitHub Actions ran `tools/validate_repository.py` and the
+full regression suite on Python 3.12 across Linux, macOS and Windows: validation
+passed and all 60 tests passed on every job. [Verified run for 0.4.0](https://github.com/kaerez/skills/actions/runs/35053423387).
+The validator now also checks markdown table shape, link fragments, changelog
+section claims and the frontmatter description bound; each guard was shown
+failing against a deliberately broken copy before it was kept.
+
+A skill eval harness lives at `evals/security_colleague/`. Its first recorded
+run compares the skill against a no-skill baseline on a brief-mode consumption
+review: 3/3 with the skill, 0/3 without. These runners call a model, so they are
+non-deterministic, cost tokens, and are deliberately not wired into CI; run them
+on demand and commit the dated record under `evals/security_colleague/records/`.
+
 `0.3.0`, 2026-09-15. GitHub Actions ran `tools/validate_repository.py` and the
 full regression suite on Python 3.12 across Linux, macOS and Windows: validation
 passed and all 59 tests passed on every job — 41 inherited plus 18 for the new

@@ -5,7 +5,7 @@
 ## 0.4.0 — Make the rules reach a run, then measure them, 2026-09-16
 
 Verified: repository validation and all 60 regression tests pass on Python 3.12
-on Linux, macOS and Windows ([CI run](https://github.com/kaerez/skills/actions/runs/35053003317)).
+on Linux, macOS and Windows ([CI run](https://github.com/kaerez/skills/actions/runs/35053423387)).
 Unverified: any client installation, update or session reload, and live
 enforcement behaviour.
 
